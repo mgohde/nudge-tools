@@ -1,0 +1,355 @@
+<story title="lbach">
+    <node id="Intro">
+        <text>You are a doctoral student working in a molecular biology lab at Repu Table Research University. Like most of your peers, you realize the importance of research and publication to your future ability to participate in and contribute to your field. Given this pressure to succeed, you sought out a job under Dr. James Smith. Dr. Smith is new to the university, but has already made a name for himself for his relentless passion for his field and pressure to publish. Recently, Dr. Smith assigned you to a group of researchers tasked with synthesizing chemicals from a newly discovered plant.</text>
+        <answers>
+            <option>
+                <text>Proceed</text>
+                <dest p="100">D1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D1">
+        <text>Although work is slow at first, you find that you get increasingly promising results in synthesizing divialan in particular as you iteratively add more stages to its synthesis. One day, you discover that your method has successfully resulted in a large amount of the chemical with very few impurities. You immediately rush to find Dr. Smith and tell him of the results. As you relay your discovery, he grows increasingly excited and finally tells you that he will be presenting your findings at his staff meeting tomorrow.</text>
+        <answers>
+            <option>
+                <text>Ask for credit in the presentation</text>
+                <dest p="80">D2_0</dest>
+                <dest p="20">D2_1</dest>
+            </option>
+            <option>
+                <text>Proceed. Dr. Smith will probably cite you..</text>
+                <dest p="50">D3_0</dest>
+                <dest p="30">D3_2</dest>
+                <dest p="20">D3_3</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D2_0">
+        <text>Dr. Smith smiles and says, “Of course! Your work was a huge step forward, and I always try to give credit where credit is due.”</text>
+        <answers>
+            <option>
+                <text>Satisfied, you return to your desk to review your notes and forward them to Dr. Smith</text>
+                <dest p="50">D3_3</dest>
+                <dest p="50">D3_0</dest>
+            </option>
+            <option>
+                <text>Tell Dr. Smith that you plan on attending if at all possible.</text>
+                <dest p="70">D3_0</dest>
+                <dest p="30">D3_3</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D2_1">
+        <text>Dr. Smith frowns slightly. After a moment he says, “Well, you will be getting credit on the paper, but our staff meetings usually aren't formal enough to warrant something like that.” </text>
+        <answers>
+            <option>
+                <text>Ignore it. He's probably right.</text>
+                <dest p="100">D3_1</dest>
+            </option>
+            <option>
+                <text>Ask if he could include you anyway.</text>
+                <dest p="90">D3_1</dest>
+                <dest p="10">D3_0</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D3_0">
+        <text>The day of the staff meeting has finally arrived. Although you have a very busy day ahead of you, you make sure to clear a block of time to attend the meeting. As the presentation draws closer, you feel increasingly excited and apprehensive about how your research is going to be presented to some of the university's most experienced researchers. Dr. Smith finally stands and you notice that he looks exhausted. While some of your colleagues are mentioned, your name is absent. </text>
+        <answers>
+            <option>
+                <text>Approach Dr. Smith after the presentation.</text>
+                <dest p="80">D4_0</dest>
+                <dest p="20">D4_1</dest>
+            </option>
+            <option>
+                <text>Let it pass. Dr. Smith looked exhausted.</text>
+                <dest p="75">D4_2</dest>
+                <dest p="25">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D3_1">
+        <text>The day of the staff meeting has finally arrived. Although you have low hopes for acknowledgement, you still manage to clear a block of time to attend the meeting. As the presentation draws closer, you wonder if Dr. Smith was entirely honest when you last spoke with him. As you watch the other presentations, you notice that all of the other faculty cite specific workgroups or names along with their findings. Dr. Smith finally stands and you notice that he seems to be scanning the audience. During the presentation, he makes several specific references to names and other projects in the lab, but your name and that of another new researcher are conspicuously absent.</text>
+        <answers>
+            <option>
+                <text>Approach Dr. Smith after the presentation</text>
+                <dest p="5">D4_0</dest>
+                <dest p="95">D4_3</dest>
+            </option>
+            <option>
+                <text>Let it pass</text>
+                <dest p="100">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D3_3">
+        <text>The day of the staff meeting has finally arrived. Although you have a very busy day ahead of you, you make sure to clear a block of time to attend the meeting. As the presentation draws closer, you feel increasingly excited and apprehensive about how your research is going to be presented to some of the university's most experienced researchers. Dr. Smith finally stands and you notice that he looks exhausted. He smiles and acknowledges your contribution to an exciting new development.</text>
+        <answers>
+            <option>
+                <text>Proceed</text>
+                <dest p="90">D5_0</dest>
+                <dest p="10">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D4_0">
+        <text>As you approach Dr. Smith, his eyes widen and he immediately apologizes for not including you in the presentation. He proceeds to mention that he was up all night working and had only been able to skim your notes for the presentation.</text>
+        <answers>
+            <option>
+                <text>Accept the apology and ask about publication.</text>
+                <dest p="90">D5_0</dest>
+                <dest p="10">D5_1</dest>
+            </option>
+            <option>
+                <text>Ask a peer about Dr. Smith's forgetfulness</text>
+                <dest p="80">D5_3</dest>
+                <dest p="20">D5_4</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D4_1">
+        <text>As you approach Dr. Smith, he smiles and asks whether you liked the presentation. When you instead ask why you were not mentioned, he assures you that he had simply forgotten to include your name. He explains that he was very busy the night prior and couldn't find all of his notes. </text>
+        <answers>
+            <option>
+                <text>Ask whether you will be included for publication</text>
+                <dest p="100">D5_5</dest>
+            </option>
+            <option>
+                <text>Contact one of the other students mentioned</text>
+                <dest p="100">D5_2</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D4_2">
+        <text>After the presentation, Dr. Smith sees you standing at the back of the room and walks hurriedly toward you. He frowns and explains that he had spent all night preparing the presentation and had only seen your notes at the last minute. </text>
+        <answers>
+            <option>
+                <text>Accept the apology and ask about publication</text>
+                <dest p="95">D5_0</dest>
+                <dest p="5">D5_1</dest>
+            </option>
+            <option>
+                <text>Ask a peer about Dr. Smith's forgetfulness.</text>
+                <dest p="50">D5_3</dest>
+                <dest p="50">D5_4</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D4_3">
+        <text>As you approach Dr. Smith, he smiles and asks whether you liked the presentation. When you instead ask why you were not mentioned, he frowns and reiterates that he tries not to include specific names when making his faculty presentations.</text>
+        <answers>
+            <option>
+                <text>Mention that other presenters cited students and teams.</text>
+                <dest p="100">D5_5</dest>
+            </option>
+            <option>
+                <text>Contact the other researchers he neglected to mention.</text>
+                <dest p="100">D5_2</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D5_0">
+        <text>You write the paper with Dr. Smith and are published! Medal get!</text>
+        <answers>
+            <option>
+                <text>Proceed.</text>
+                <dest p="100">END</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D5_1">
+        <text>A week after the faculty presentations, you forward your contributions to the paper to Dr. Smith. When you leave for the night, you decide to ask Dr. Smith to see his comments on the current draft of the paper. When you approach Dr. Smith, he hands you a copy of the paper without a title or a list of authors. </text>
+        <answers>
+            <option>
+                <text>This seems suspicious. Contact the department chair.</text>
+                <dest p="100">D6_4</dest>
+            </option>
+            <option>
+                <text>This draft is clearly incomplete. Check back in a week.</text>
+                <dest p="80">D6_3</dest>
+                <dest p="20">D6_2</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D5_2">
+        <text>You are growing increasingly suspicious of Dr. Smith's behavior. You proceed to ask others in the lab about Dr. Smith's omission of their names, and very few seem to have much to say about the matter. You finally contact Emma, the other researcher not mentioned in Dr. Smith's presentation. Though she is new to the lab, she seems adamant that you carefully document your work and start communicating with the department chair.</text>
+        <answers>
+            <option>
+                <text>Follow Emma's advice</text>
+                <dest p="100">D6_4</dest>
+            </option>
+            <option>
+                <text>Emma's advice seems a bit extreme. Just regularly check on the paper.</text>
+                <dest p="100">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D5_3">
+        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they confirm that Dr. Smith seems to forget details in papers and presentations fairly often. One peer in particular warned, “Yeah, sometimes you have to be proactive in checking his rough drafts for omissions like that.”</text>
+        <answers>
+            <option>
+                <text>Regularly check with Dr. Smith</text>
+                <dest p="100">D6_0</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D5_4">
+        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they seem to be very surprised. Evidently, it is rare for Dr. Smith to drop important details like names from his presentations and papers, though one peer advises, “I suppose he also usually doesn't stay up that late to finish a presentation. He went home after that staff meeting.”</text>
+        <answers>
+            <option>
+                <text>Proceed.</text>
+                <dest p="80">D6_0</dest>
+                <dest p="20">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D6_0">
+        <text>Following your peer's advice, you decide to regularly follow up with Dr. Smith to ensure that the paper is as complete and accurate as possible. </text>
+        <answers>
+            <option>
+                <text>Proceed</text>
+                <dest p="90">D5_0</dest>
+                <dest p="10">D5_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D6_2">
+        <text>After another week of collaboration on edits and another analysis of the data, you decide to check on the next draft. As you walk into his office, Dr. Smith seems to be surprised to see you. As he hands you a copy of the current draft, you are pleased to find yourself listed as an author. </text>
+        <answers>
+            <option>
+                <text>Proceed</text>
+                <dest p="100">D5_0</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D6_3">
+        <text>After another week of collaboration on edits and another analysis of the data, you decide to check on the next draft. As you walk into his office, Dr. Smith seems to be surprised to see you. It takes him longer than usual to print out a copy of the final draft, and you once again find that the title and author are fields are missing on the paper. </text>
+        <answers>
+            <option>
+                <text>Ask Dr. Smith to keep you updated</text>
+                <dest p="90">D7_0</dest>
+                <dest p="10">D7_1</dest>
+            </option>
+            <option>
+                <text>See if anyone else has a copy of the paper.</text>
+                <dest p="100">D7_2</dest>
+            </option>
+            <option>
+                <text>Escalate and approach the depatment chair</text>
+                <dest p="100">D6_4</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D6_4">
+        <text>As you find Dr. Smith's behavior to be very suspect, you schedule an appointment with Dr. Linda Brown, chair of Repu Table's chemistry department. At the meeting, you express concern that Dr. Smith is attempting to take credit for your work. You proceed to show her your notes, and she eventually responds, “Alright. I think that I've seen enough. I'll look into this, but you should really visit our Research Integrity Officer. If you would like, I can come with you.”</text>
+        <answers>
+            <option>
+                <text>Visit the Research Integrity Officer with Dr. Brown</text>
+                <dest p="100">D7_3</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D7_0">
+        <text>A few days later, Dr. Smith sends you an email message stating that the paper is due for publication and that your name was included. When you finally see the article published in a trade journal, you are angered to find that your name was not included.</text>
+        <answers>
+            <option>
+                <text>Contact the journal's editors about the error</text>
+                <dest p="100">D8_2</dest>
+            </option>
+            <option>
+                <text>Meet with the deparment chair.</text>
+                <dest p="100">D6_4</dest>
+            </option>
+            <option>
+                <text>Look for another job.</text>
+                <dest p="100">D8_0</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D7_1">
+        <text>A few days later, Dr. Smith CCs you on an email message to the editor of a trade journal with the final draft of the paper attached. You are relieved to see that you were listed as an author.</text>
+        <answers>
+            <option>
+                <text>End</text>
+                <dest p="100">END</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D7_2">
+        <text>After the next staff meeting, you approach some of the other researchers in the department and ask them whether Dr. Smith has shared the paper with them. Eventually, you find Dr. Garcia, whose lab is also attempting to synthesize divialan, but from a different source. As you discuss your work, he says, “Hey! You seem to know an awful lot about Dr. Smith's work. Are you working in his lab? I have a draft of his paper in my office if you're interested.” You express interest and he shows you a copy of the paper with a title and list of authors without your name. </text>
+        <answers>
+            <option>
+                <text>This has gone on long enough. Ask for a copy and visit the department chair.</text>
+                <dest p="100">D6_4</dest>
+            </option>
+            <option>
+                <text>Don't risk retaliation. Look for another job.</text>
+                <dest p="100">D8_0</dest>
+            </option>
+            <option>
+                <text>You can still solve this. Demand that your name be added.</text>
+                <dest p="100">D8_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D7_3">
+        <text>Before you visit the Mr. Johnson, you prepare your notes and a current copy of the paper with your contributions highlighted. You feel apprehensive about going, but Dr. Brown reassures you that . As you approach his office, Mr. Johnson smiles and welcomes you and Dr. Brown in. After relating your experiences, he tells you that he will make copies of your notes and speak to Dr. Smith about the situation. </text>
+        <answers>
+            <option>
+                <text>Proceed</text>
+                <dest p="100">D8_3</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D8_0">
+        <text>After carefully weighing your options, you realize that it would be best to to leave the situation behind and find a different lab. You never could have imagined that such a simple matter would escalate to such an extent.</text>
+        <answers>
+            <option>
+                <text>End</text>
+                <dest p="100">END</dest>
+            </option>
+        </answers>
+    </node>
+    
+    <node id="D8_1">
+        <text>You immediately approach Dr. Smith's office and walk in. He doesn't seem to be doing anything important, so you proceed to point out the publication's authorship requirements and demand that he add you as an author. He tells you once again that he will include your name soon.</text>
+        <answers>
+            <option>
+                <text>He's not trustworthy. Contact the department chair.</text>
+                <dest p="100">D6_4</dest>
+            </option>
+            <option>
+                <text>Give him one more chance.</text>
+                <dest p="50">D7_0</dest>
+                <dest p="50">D7_1</dest>
+            </option>
+        </answers>
+    </node>
+    
+    
+    
+</story>

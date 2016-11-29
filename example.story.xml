@@ -1,0 +1,52 @@
+<story title="Example story">
+	<node id="D1_0">
+		<text>You are confronted with a serious question: To cheese it or not to cheese it?</text>
+		<answers>
+			<option>
+				<text>Cheese it!</text>
+				<dest p="50">D2_0</dest>
+				<dest p="50">D2_1</dest>
+			</option>
+			<option>
+				<text>Don't cheese it!</text>
+				<dest p="100">D2_1</dest>
+			</option>
+		</answers>
+	</node>
+	<node id="D2_0">
+		<text>You were able to cheese it!</text>
+		<answers>
+			<option>
+				<text>Proceed</text>
+				<dest p="100">D3_0</dest>
+			</option>
+		</answers>
+	</node>
+	<node id="D2_1">
+		<text>You were unsuccessful at cheesing it!</text>
+		<answers>
+			<option>
+				<text>Proceed</text>
+				<dest p="100">D3_0</dest>
+			</option>
+		</answers>
+	</node>
+	<node id="D2_2">
+		<text>You proceed not to cheese it. This is an additional line to test the parser. Yet another line!</text>
+		<answers>
+			<option>
+				<text>Proceed</text>
+				<dest p="100">D3_0</dest>
+			</option>
+		</answers>
+	</node>
+	<node id="D3_0">
+		<text>Regardless of whether you cheesed it, something happened.</text>
+		<answers>
+			<option>
+				<text>End</text>
+				<dest p="100">END</dest>
+			</option>
+		</answers>
+	</node>
+</story>

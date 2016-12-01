@@ -1,5 +1,13 @@
 #!/usr/bin/python
 
+# story2xml.py -- Converts a somewhat strictly formatted text document into an XML file usable by 
+# several other story testing, validation, and installation tools. 
+
+# story2xml is effectively a sort of two-pass compiler. The first pass determines boundaries for each block,
+# (a block in this case is a story segment with a title, text, and user responses). The second pass iterates
+# through all of these blocks and generates the output XML file.
+
+
 import os
 import sys
 
@@ -18,6 +26,7 @@ def get_title(linelist):
 
 
 def remove_blanks(linelist):
+    """Deletes all blank lines in the given list."""
     retlist=[]
     
     for l in linelist:
@@ -28,6 +37,7 @@ def remove_blanks(linelist):
 
 
 def get_indentation_level(line):
+    """Counts the number of whitespace characters surrounding a given line."""
     return max(len(line)-len(line.strip()), 0)
 
 
@@ -35,6 +45,9 @@ def gen_response(respline, indent):
     strippedrespline=respline[0].strip()
     print '%s<option>' % indent
 
+    # Each response line should be in the format: Text presented to user -> probability1% to wherever, probability2% to wherever1, ..., probabilityN% to whereverN
+    # As such, it should first be split along the '->' to get user text and destinations, then along ',' to get individual destinations, then along 'to'
+    # or ' ' to get probabilities and destination names.
     namedests=strippedrespline.split('->')
     namedests[0]=namedests[0].strip()
     if len(namedests)==2:
@@ -47,7 +60,8 @@ def gen_response(respline, indent):
             if len(desttoks)!=0:
                 dests.append([desttoks[0].strip('%'), desttoks[len(desttoks)-1].strip()])
                 
-        # Do some sanity checking:
+        # Check if the probabilities for all user defined destinations sum to 100%. 
+        # If they do not, then the story rendering software may fail.
         destsum=0
         for d in dests:
             destsum=destsum+int(d[0])
@@ -59,6 +73,7 @@ def gen_response(respline, indent):
             print_err("Error: for response '%s' on line %s, destination probabilities sum to a value below 100%%" % (namedests[0], respline[1]))
             raise Exception('Nasty stuff!')
         
+        # If no errors have been found, proceed to generate XML for the given destination statement.
         for d in dests:
             print '%s\t<dest p="%s">%s</dest>' % (indent, d[0], d[1])
                 

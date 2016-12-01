@@ -125,6 +125,7 @@ def rcsv_sanity_check(node):
     if node.nodename.upper()=="END":
         return True
     elif len(node.children)==0:
+        print "Node with no children or endpoints found: %s" % node.nodename
         return False
     else:
         for c in node.children:
@@ -146,7 +147,7 @@ def check(node):
         return (True, None)
 
 
-# This implements a depth first topological search to determine if there are any circular references.
+# This implements a search to determine if there are any circular references.
 # While it is possible for a story with circular paths to terminate, doing so is likely very bad practice
 # that can fairly easily completely break the sanity checker.
 def detect_circular_references(nodelist):

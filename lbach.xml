@@ -18,7 +18,7 @@
                 <dest p="20">D2_1</dest>
             </option>
             <option>
-                <text>Proceed. Dr. Smith will probably cite you..</text>
+                <text>Proceed. Dr. Smith will probably cite you.</text>
                 <dest p="50">D3_0</dest>
                 <dest p="30">D3_2</dest>
                 <dest p="20">D3_3</dest>
@@ -27,7 +27,7 @@
     </node>
     
     <node id="D2_0">
-        <text>Dr. Smith smiles and says, “Of course! Your work was a huge step forward, and I always try to give credit where credit is due.”</text>
+        <text>Dr. Smith smiles and says, "Of course! Your work was a huge step forward, and I always try to give credit where credit is due."</text>
         <answers>
             <option>
                 <text>Satisfied, you return to your desk to review your notes and forward them to Dr. Smith</text>
@@ -43,7 +43,7 @@
     </node>
     
     <node id="D2_1">
-        <text>Dr. Smith frowns slightly. After a moment he says, “Well, you will be getting credit on the paper, but our staff meetings usually aren't formal enough to warrant something like that.” </text>
+        <text>Dr. Smith frowns slightly. After a moment he says, "Well, you will be getting credit on the paper, but our staff meetings usually aren't formal enough to warrant something like that." </text>
         <answers>
             <option>
                 <text>Ignore it. He's probably right.</text>
@@ -199,7 +199,7 @@
     </node>
     
     <node id="D5_3">
-        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they confirm that Dr. Smith seems to forget details in papers and presentations fairly often. One peer in particular warned, “Yeah, sometimes you have to be proactive in checking his rough drafts for omissions like that.”</text>
+        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they confirm that Dr. Smith seems to forget details in papers and presentations fairly often. One peer in particular warned, "Yeah, sometimes you have to be proactive in checking his rough drafts for omissions like that."</text>
         <answers>
             <option>
                 <text>Regularly check with Dr. Smith</text>
@@ -209,7 +209,7 @@
     </node>
     
     <node id="D5_4">
-        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they seem to be very surprised. Evidently, it is rare for Dr. Smith to drop important details like names from his presentations and papers, though one peer advises, “I suppose he also usually doesn't stay up that late to finish a presentation. He went home after that staff meeting.”</text>
+        <text>When you ask your peers about Dr. Smith's apparent forgetfulness, they seem to be very surprised. Evidently, it is rare for Dr. Smith to drop important details like names from his presentations and papers, though one peer advises, "I suppose he also usually doesn't stay up that late to finish a presentation. He went home after that staff meeting."</text>
         <answers>
             <option>
                 <text>Proceed.</text>
@@ -260,7 +260,7 @@
     </node>
     
     <node id="D6_4">
-        <text>As you find Dr. Smith's behavior to be very suspect, you schedule an appointment with Dr. Linda Brown, chair of Repu Table's chemistry department. At the meeting, you express concern that Dr. Smith is attempting to take credit for your work. You proceed to show her your notes, and she eventually responds, “Alright. I think that I've seen enough. I'll look into this, but you should really visit our Research Integrity Officer. If you would like, I can come with you.”</text>
+        <text>As you find Dr. Smith's behavior to be very suspect, you schedule an appointment with Dr. Linda Brown, chair of Repu Table's chemistry department. At the meeting, you express concern that Dr. Smith is attempting to take credit for your work. You proceed to show her your notes, and she eventually responds, "Alright. I think that I've seen enough. I'll look into this, but you should really visit our Research Integrity Officer. If you would like, I can come with you."</text>
         <answers>
             <option>
                 <text>Visit the Research Integrity Officer with Dr. Brown</text>
@@ -298,7 +298,7 @@
     </node>
     
     <node id="D7_2">
-        <text>After the next staff meeting, you approach some of the other researchers in the department and ask them whether Dr. Smith has shared the paper with them. Eventually, you find Dr. Garcia, whose lab is also attempting to synthesize divialan, but from a different source. As you discuss your work, he says, “Hey! You seem to know an awful lot about Dr. Smith's work. Are you working in his lab? I have a draft of his paper in my office if you're interested.” You express interest and he shows you a copy of the paper with a title and list of authors without your name. </text>
+        <text>After the next staff meeting, you approach some of the other researchers in the department and ask them whether Dr. Smith has shared the paper with them. Eventually, you find Dr. Garcia, whose lab is also attempting to synthesize divialan, but from a different source. As you discuss your work, he says, "Hey! You seem to know an awful lot about Dr. Smith's work. Are you working in his lab? I have a draft of his paper in my office if you're interested." You express interest and he shows you a copy of the paper with a title and list of authors without your name. </text>
         <answers>
             <option>
                 <text>This has gone on long enough. Ask for a copy and visit the department chair.</text>

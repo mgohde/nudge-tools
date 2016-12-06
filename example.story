@@ -5,7 +5,7 @@ D1_0:
     
     Responses:
         Cheese it! -> 50% to D2_0, 50% to D2_1
-        Don't cheese it! -> 100% to D2_1
+        Don't cheese it! -> 100% to D2_2
 
 D2_0:
     Note: This is a comment.

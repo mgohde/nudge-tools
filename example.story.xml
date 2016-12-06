@@ -9,7 +9,7 @@
 			</option>
 			<option>
 				<text>Don't cheese it!</text>
-				<dest p="100">D2_1</dest>
+				<dest p="100">D2_2</dest>
 			</option>
 		</answers>
 	</node>

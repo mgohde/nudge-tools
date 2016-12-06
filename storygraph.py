@@ -31,7 +31,6 @@ def sanitize(text):
         newstr=newstr+c
         
     return newstr
-            
 
 
 def readstory(infile):
@@ -41,6 +40,7 @@ def readstory(infile):
     
     root=ET.fromstring(contents)
     storytitle=root.attrib['title']
+    storytitle=storytitle.replace(" ", "_")
     
     # Start the DOT file:
     print "graph %s  {" % storytitle

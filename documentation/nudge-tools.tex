@@ -1,0 +1,117 @@
+ \documentclass[12pt,letterpaper]{article}
+ 
+ % Insert package usage statements here:
+ \usepackage{listings}
+ 
+ \begin{document}
+ 
+ \title{The Nudge Support Toolset}
+ \author{Michael A. Gohde}
+ \date{December 6, 2016}
+ \maketitle
+ 
+ \section{Overview}
+ The task of writing stories for Nudge is inherently difficult. The Nudge
+ Support Toolset exists to alleviate some of this difficulty by providing
+ a large set of utilities designed to compile, validate, and install stories.
+ 
+ This document exists to detail the function and operation of each utility
+ in the Nudge Support Toolset.
+ 
+ \section{story2xml.py}
+ story2xml exists to translate well structured, human-readable stories into 
+ an intermediate XML format for use by all of the other tools in the set.
+ 
+ \subsection{Input file format}
+ \lstset{numbers=left, frame=shadowbox}
+ \begin{lstlisting}
+ Title: <Insert story title here>
+ 
+ First story node title:
+    <Insert story node text here>
+    
+    Responses:
+        Response 1 text -> prb1% to dst1, prbN% to dstN
+        Response N text -> prb3% to dst3
+ \end{lstlisting}
+ 
+ Each story2xml input file must follow a common set of conventions:
+ \begin{enumerate}
+   \item The story's title must be written on its own line and prefixed with ``Title:''
+   \item Each story ``block'' or ``decision'' (hereafter referred to as a ``node'') must start with a title followed by a colon.
+   \item The text content in each node (ie. the story text) must not start with a word followed by a colon.
+   \item All possible user actions are defined in a block prefixed by the keyword ``Responses:''. This block must be indented more than all of the other text in its node.
+ \end{enumerate}
+ 
+ \subsection{A complete input file example}
+ \begin{lstlisting}
+Title: Example story
+
+D1_0:
+    You are confronted with a serious question: 
+    To cheese it or not to cheese it?
+    
+    Responses:
+        Cheese it! -> 50% to D2_0, 50% to D2_1
+        Don't cheese it! -> 100% to D2_2
+
+D2_0:
+    Note: This is a comment.
+    Note: All comment text is discarded.
+    
+    You were able to cheese it!
+    
+    Responses:
+        Proceed -> 100% to D3_0
+
+D2_1:
+    Comment: This is also a comment.
+    You were unsuccessful at cheesing it!
+    
+    Responses:
+        Proceed -> 100% to D3_0
+
+D2_2:
+    You proceed not to cheese it.
+    
+    Responses:
+        Proceed -> 100% to D3_0
+        
+D3_0:
+    Regardless of whether you cheesed it, 
+    something happened.
+    
+    Responses:
+        End -> 100% to END
+ \end{lstlisting}
+ 
+ \subsection{Running story2xml}
+ story2xml accepts one argument on the command line: the name of a text file containing a properly formatted story.
+ Once run, story2xml will print an XML-formatted story to stdout, so it may be useful to redirect its output to a different
+ file. 
+ 
+ Example usage:
+ \begin{center}
+ story2xml.py mystory.txt $>$mystory.xml
+ \end{center}
+ 
+ \subsection{Error messages}
+ When compiling a story, story2xml attempts to perform a few tests to ensure that the provided source file is logically sound.
+ If an error is encountered, story2xml will print a message and information that can be used to locate and correct the error.
+ 
+ List of error messages:
+ \paragraph{Error: for response (response text) on line (line number), destination probabilities exceed 100\%}
+ This error indicates that the total of all of the weights for some response exceeds 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
+ \paragraph{Error: for response (response text) on line (line number), destination probabilities sum to a value below 100\%}
+ This error indicates that the total of all o fthe weights for some response is below 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
+ \paragraph{Warning: for line (line number), unknown token (string)}
+ This message indiciates that the compiler has found a command (a word followed by a colon) that it has no rule to handle. This can safely be ignored in some cases.
+ 
+ \section{sanitytext.py}
+ sanitytest exists to check whether a story is logically complete by a number of metrics. These include whether a story can be finished through every possible
+ combination of user actions, whether every set of weights sums to 100\%, and whether there are any circular references within a story. 
+ 
+ \subsection{Running sanitytest}
+ Like story2xml, sanitytest accepts one argument on the command line: the nane of a text file containing an XML-formatted story file.
+ When run, sanitytest will either produce an error output or a message indicating that the story passed all checks.
+ \end{document}

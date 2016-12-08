@@ -8,14 +8,14 @@ D1_0:
         Don't cheese it! -> 100% to D2_2
 
 D2_0:
-    Note: This is a comment.
+    Note: This is a comment. Its text will not be included in the XML output.
     You were able to cheese it!
     
     Responses:
         Proceed -> 100% to D3_0
 
 D2_1:
-    Comment: This is a note.
+    Comment: This is also a comment.
     You were unsuccessful at cheesing it!
     
     Responses:

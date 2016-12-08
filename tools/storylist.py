@@ -95,6 +95,7 @@ class Node:
         self.text=""
         self.temp_mark=False
         self.parent=None
+        self.answernode=None
         #self.permMark=False
         
         
@@ -122,6 +123,7 @@ def readstory(infile):
         n=Node(nodeid)
         n.text=textnode.text
         n.add_dests(answernode)
+        n.answernode=answernode
         #print(n.dests)
         nodelist.append(n)
         
@@ -154,6 +156,16 @@ def rcsv_filter_heritage(n, curlist):
         rcsv_filter_heritage(n.parent, curlist)
 
 
+def find_choice_text(parent, node):
+    if parent.answernode is None:
+        return "<unknown>"
+    for n in parent.answernode:
+        textnode=nodesearch("text", n)
+        destnode=nodesearch("dest", n)
+        if destnode.text==node.nodename:
+            return textnode.text
+    return "<unknown>"
+
 
 def print_list(l):
     listprob=calc_probability(l)
@@ -167,6 +179,7 @@ def print_list(l):
         print "\tText: %s" % e.text
         if (i+1)<listlen:
             nexte=l[i+1]
+            print "\tAnswer chosen: %s" % find_choice_text(l[i], nexte)
             print "\tDestination: %s" % nexte.nodename
             print "\tDestination weight: %s%%" % str(e.get_dest_weight(nexte)*100)
         else:

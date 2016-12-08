@@ -105,16 +105,16 @@ D3_0:
  \paragraph{Error: for response (response text) on line (line number), destination probabilities exceed 100\%}
  This error indicates that the total of all of the weights for some response exceeds 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
  \paragraph{Error: for response (response text) on line (line number), destination probabilities sum to a value below 100\%}
- This error indicates that the total of all o fthe weights for some response is below 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
+ This error indicates that the total of all of the weights for some response is below 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
  \paragraph{Warning: for line (line number), unknown token (string)}
- This message indiciates that the compiler has found a command (a word followed by a colon) that it has no rule to handle. This can safely be ignored in some cases.
+ This message indicates that the compiler has found a command (a word followed by a colon) that it has no rule to handle. This can safely be ignored in some cases.
  
  \section{sanitytext.py}
  sanitytest exists to check whether a story is logically complete by a number of metrics. These include whether a story can be finished through every possible
  combination of user actions, whether every set of weights sums to 100\%, and whether there are any circular references within a story. 
  
  \subsection{Running sanitytest}
- Like story2xml, sanitytest accepts one argument on the command line: the nane of a text file containing an XML-formatted story file.
+ Like story2xml, sanitytest accepts one argument on the command line: the name of a text file containing an XML-formatted story file.
  When run, sanitytest will either produce an error output or a message indicating that the story passed all checks.
  
  Example usage:

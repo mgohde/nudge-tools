@@ -68,18 +68,40 @@ def readstory(infile):
                 minprob=minprob+int(d.attrib['p'])
                 resid+=1
             answerchoice=chr(ord(answerchoice)+1)
-        
-    return None
 
 
+def delstory(infile):
+    contents=infile.read()
+    curid=1
+    resid=1
+    
+    root=ET.fromstring(contents)
+    storytitle=root.attrib['title']
+    
+    print "-- Generated statements for story: %s" % storytitle
+    print "DELETE FROM storytable WHERE storytitle='%s';" % storytitle
+    print "DELETE FROM answers WHERE storytitle='%s';" % storytitle
+    print "DELETE FROM results WHERE storytitle='%s';" % storytitle
+    
+    
 def main(args):
     infile=sys.stdin
+    delete=False
     
     # Insert arg handling fanciness here
     if len(args)!=0:
-        infile=open(args[1], 'r')
+        if args[1]=='-d':
+            delete=True
+            if len(args)>1:
+                infile=open(args[2], 'r')
+        else:
+            infile=open(args[1], 'r')
     
-    story=readstory(infile)
+    if not delete:
+        readstory(infile)
+    else:
+        delstory(infile)
+    
 
 
 if __name__=="__main__":

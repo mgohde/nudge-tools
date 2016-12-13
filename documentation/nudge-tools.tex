@@ -106,8 +106,12 @@ D3_0:
  This error indicates that the total of all of the weights for some response exceeds 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
  \paragraph{Error: for response (response text) on line (line number), destination probabilities sum to a value below 100\%}
  This error indicates that the total of all of the weights for some response is below 100\%. To correct this error, go to the line indicated and re-evaluate all weights.
+ \paragraph{Error: all stories my start with title declaration}
+ The first line of every story must declare that story's title. To correct this error, change the first line to include a ``Title:'' declaration as shown
+ in the example story provided.
  \paragraph{Warning: for line (line number), unknown token (string)}
  This message indicates that the compiler has found a command (a word followed by a colon) that it has no rule to handle. This can safely be ignored in some cases.
+
  
  \section{sanitytext.py}
  sanitytest exists to check whether a story is logically complete by a number of metrics. These include whether a story can be finished through every possible
@@ -253,6 +257,9 @@ Storyline weight probability: 100.0%
  Once a story has been completed and sanity tested, it is necessary to convert its contents into a series of 
  SQL statements for insertion into the Nudge story database. dbtool is used to perform this conversion.
  
+ If it is necessary to remove a storyline from the database, dbtool can be used to generate statements that can aid in 
+ storyline deletion.
+ 
  \subsection{Running dbtool}
  dbtool produces a series of SQL statements. As such, it is likely useful to redirect this output to a file that can 
  be sourced later on.
@@ -261,7 +268,7 @@ Storyline weight probability: 100.0%
  dbtool.py mystory.xml $>$mystory.sql
  \end{center}
  
- \subsection{Example output}
+ \subsection{Example insertion output}
  \begin{lstlisting}[breaklines=true]
 -- Generated statements for node: D1_0
 INSERT INTO storytable VALUES (1,'Example story','D1_0','You are confronted with a serious question: To cheese it or not to cheese it?',0);
@@ -288,4 +295,18 @@ INSERT INTO answers VALUES ('Example story','D3_0','A','End');
 INSERT INTO results VALUES (7,'Example story','D3_0','A',0,100,'END');
  \end{lstlisting}
  
+ \subsection{Deleting a story with dbtool}
+ When passed the `-d' parameter, dbtool will generate statements that will effectively delete a storyline. 
+ 
+ \begin{center}
+ dbtool.py -d mystory.xml
+ \end{center}
+ 
+ \subsection{Example deletion output}
+ \begin{lstlisting}[breaklines=true]
+-- Generated statements for story: Example story
+DELETE FROM storytable WHERE storytitle='Example story';
+DELETE FROM answers WHERE storytitle='Example story';
+DELETE FROM results WHERE storytitle='Example story';
+ \end{lstlisting}
  \end{document}

@@ -82,14 +82,14 @@ def gen_response(respline, indent):
 
 def generate_block(linelist):
     if len(linelist)==0:
-        return
+        return False
     
     linetoks=linelist[0][0].split()
     if len(linetoks)==0: # No valid start line.
-        return
+        return False
     elif linetoks[0].upper()=="TITLE:":
         print '<story title="%s">' % linelist[0][0][len('TITLE: '):]
-        return
+        return True
     
     print '\t<node id="%s">' % linetoks[0].strip().strip(':')
     textcontent=""
@@ -121,6 +121,7 @@ def generate_block(linelist):
     
     print '\t\t</answers>'
     print '\t</node>'
+    return False
                     
 
 def getlines(content):
@@ -146,14 +147,20 @@ def parse(infile):
     #print '<story title="%s">' % get_title(lines)
     
     templist=[]
+    hastitle=False
     for l in lines:
         level=get_indentation_level(l[0])
         if level==0:
             if len(templist)!=0:
-                generate_block(templist)
+                tmp=generate_block(templist)
+                hastitle=hastitle | tmp
             templist=[]
         
         templist.append(l)
+    
+    if not hastitle:
+        print_err("Error: all stories must start with title declaration.")
+        raise Exception()
     
     if len(templist)!=0:
         generate_block(templist)

@@ -41,6 +41,19 @@ def get_indentation_level(line):
     return max(len(line)-len(line.strip()), 0)
 
 
+def get_additional_parameters(desttoks):
+    retlist=[]
+    curstr=""
+    for d in desttoks:
+        shortd=d.strip(';')
+        curstr=curstr+shortd
+        
+        if(len(d)<len(d.strip(';'))):
+            retlist.append(curstr.strip())
+            curstr=""
+    return retlist
+
+
 def gen_response(respline, indent):
     strippedrespline=respline[0].strip()
     print '%s<option>' % indent
@@ -58,6 +71,10 @@ def gen_response(respline, indent):
         for d in destlines:
             desttoks=d.split()
             if len(desttoks)!=0:
+                # Ie. if there are additional parameters:
+                if((len(desttoks)-1)>2):
+                    for d in desttoks[1:(len(desttoks)-2)]:
+                        if d
                 dests.append([desttoks[0].strip('%'), desttoks[len(desttoks)-1].strip()])
                 
         # Check if the probabilities for all user defined destinations sum to 100%. 

@@ -69,13 +69,29 @@ def gen_response(respline, indent):
         destlines=namedests[1].split(',')
         dests=[]
         for d in destlines:
-            desttoks=d.split()
+            destreward=d.split('with')
+            desttoks=destreward[0].split()
+            withdat=[]
+            
+            # In this case, there is a "with" statement. This allows the story author to specify a specific reward
+            # to be given to the user on choosing the specific path taken. While this is currently intended for use 
+            # with end of game badges, it can also be applied to specific actions taken in game.
+            if len(destreward)==2:
+                reward=destreward[1]
+                reward=reward.strip('() ')
+                rewardtoks=reward.split(';')
+                for r in rewardtoks:
+                    r=r.strip()
+                    withdat.append(r)
+                
             if len(desttoks)!=0:
-                # Ie. if there are additional parameters:
-                if((len(desttoks)-1)>2):
-                    for d in desttoks[1:(len(desttoks)-2)]:
-                        if d
-                dests.append([desttoks[0].strip('%'), desttoks[len(desttoks)-1].strip()])
+                dest=''
+                for i in range(0, len(desttoks)):
+                    if desttoks[i]=='to':
+                        if (i+1)<len(desttoks):
+                            dest=desttoks[i+1]
+                dests.append([desttoks[0].strip('%'), dest.strip(), withdat])
+            
                 
         # Check if the probabilities for all user defined destinations sum to 100%. 
         # If they do not, then the story rendering software may fail.
@@ -92,7 +108,11 @@ def gen_response(respline, indent):
         
         # If no errors have been found, proceed to generate XML for the given destination statement.
         for d in dests:
-            print '%s\t<dest p="%s">%s</dest>' % (indent, d[0], d[1])
+            if len(d[2])!=0:
+                reward=d[2]
+                print '%s\t<dest p="%s" reward="%s" rewardtext="%s" numpoints="%s">%s</dest>' % (indent, d[0], reward[0], reward[1], reward[2], d[1])
+            else:
+                print '%s\t<dest p="%s">%s</dest>' % (indent, d[0], d[1])
                 
     print '%s</option>' % indent
         

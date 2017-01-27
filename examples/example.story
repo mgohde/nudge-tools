@@ -35,4 +35,4 @@ D3_0:
     Regardless of whether you cheesed it, something happened.
     
     Responses:
-        End -> 100% to END
+        End -> 100% to END with (Examplereward; amazing description; 27)

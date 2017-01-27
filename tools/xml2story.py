@@ -54,6 +54,13 @@ def gen_text(text, indent):
     out.write("\n\n")
     
 
+def gen_extended_attributes_block(attribarr):
+    if len(attribarr)!=3:
+        return ''
+    else:
+        return ' with (%s; %s; %s)' % (attribarr[0], attribarr[1], attribarr[2])
+
+
 def gen_response_block(node, indent):
     out=sys.stdout
     print "%sResponses:" % indent
@@ -63,10 +70,21 @@ def gen_response_block(node, indent):
         dests=manynodesearch("dest", child)
         out.write("%s%s%s -> " % (indent, indent, textnode.text))
         for d in dests:
+            extattribs=[]
+            exttext=''
+            # Determine if we have extended attributes (ie. a reward statement, etc):
+            try:
+                extattribs.append(d.attrib['reward'])
+                extattribs.append(d.attrib['rewardtext'])
+                extattribs.append(d.attrib['points'])
+                
+                exttext=gen_extended_attributes_block(extattribs)
+            except:
+                    pass
             if d is dests[0]:
-                out.write("%s%% to %s" % (d.attrib['p'], d.text))
+                out.write("%s%% to %s%s" % (d.attrib['p'], d.text, exttext))
             else:
-                out.write(", %s%% to %s" % (d.attrib['p'], d.text))
+                out.write(", %s%% to %s%s" % (d.attrib['p'], d.text, exttext))
         out.write("\n")
 
 

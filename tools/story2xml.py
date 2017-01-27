@@ -110,7 +110,7 @@ def gen_response(respline, indent):
         for d in dests:
             if len(d[2])!=0:
                 reward=d[2]
-                print '%s\t<dest p="%s" reward="%s" rewardtext="%s" numpoints="%s">%s</dest>' % (indent, d[0], reward[0], reward[1], reward[2], d[1])
+                print '%s\t<dest p="%s" reward="%s" rewardtext="%s" points="%s">%s</dest>' % (indent, d[0], reward[0], reward[1], reward[2], d[1])
             else:
                 print '%s\t<dest p="%s">%s</dest>' % (indent, d[0], d[1])
                 

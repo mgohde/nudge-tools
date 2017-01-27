@@ -56,17 +56,21 @@ def readstory(infile):
         for a in answernode:
             destsearch=manynodesearch("dest", a)
             for d in destsearch:
+                # The way nudge is currently implemented, rewards cannot be given out per user action, however 
+                # this may change in the future, so it is beneficial to be able to include per-decision
+                # rewards now:
+                try:
+                    numpoints=int(d.attrib['points'])
+                    rewardname=d.attrib['reward']
+                    rewardtext=d.attrib['rewardtext']
+                    endname="e%d" % curid
+                    
+                    print "INSERT INTO rewardss (reward, statement, points, end_id, end, storytitle) VALUES ('%s', '%s', %d, %d, '%s', '%s');" % (rewardname, rewardtext, numpoints, curid, endname, storytitle)
+                except:
+                    pass
+                
                 if(d.text=="END"):
                     position=1
-                    try:
-                        numpoints=int(d.attrib['points'])
-                        rewardname=d.attrib['reward']
-                        rewardtext=d.attrib['rewardtext']
-                        endname="e%d" % curid
-                        
-                        print "INSERT INTO rewardss (reward, statement, points, end_id, end, storytitle) VALUES ('%s', '%s', %d, %d, '%d', '%d');" % (rewardname, rewardtext, numpoints, curid, endname, storytitle)
-                    except:
-                         pass
                      
 
 

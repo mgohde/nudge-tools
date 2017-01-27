@@ -45,7 +45,7 @@
 		<answers>
 			<option>
 				<text>End</text>
-				<dest p="100">END</dest>
+				<dest p="100" reward="Examplereward" rewardtext="amazing description" points="27">END</dest>
 			</option>
 		</answers>
 	</node>

@@ -94,7 +94,7 @@ def readstory(infile):
                     minprob=minprob+int(d.attrib['p'])
                     resid+=1
 
-        answerchoice=chr(ord(answerchoice)+1)
+            answerchoice=chr(ord(answerchoice)+1)
 
 
 def delstory(infile):
@@ -109,6 +109,7 @@ def delstory(infile):
     print "DELETE FROM storytable WHERE storytitle='%s';" % storytitle
     print "DELETE FROM answers WHERE storytitle='%s';" % storytitle
     print "DELETE FROM results WHERE storytitle='%s';" % storytitle
+    print "DELETE FROM rewardss WHERE storytitle='%s';" % storytitle
     
 
 def printusage(progname):

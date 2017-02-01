@@ -38,7 +38,7 @@ def remove_blanks(linelist):
 
 def get_indentation_level(line):
     """Counts the number of whitespace characters surrounding a given line."""
-    return max(len(line)-len(line.strip()), 0)
+    return max(len(line)-len(line.lstrip()), 0)
 
 
 def get_additional_parameters(desttoks):
@@ -137,6 +137,7 @@ def generate_block(linelist):
         linetoks=sline.split()
         
         if len(linetoks)!=0:
+            linetoks[0]=linetoks[0].strip()
             # Determine what, exactly to do with this list.
             if linetoks[0][len(linetoks[0])-1]==':':
                 if linetoks[0].upper()=="RESPONSES:":
@@ -196,7 +197,7 @@ def parse(infile):
         templist.append(l)
     
     if not hastitle:
-        print_err("Error: all stories must start with title declaration.")
+        print_err("Error: all stories must start with a title declaration.")
         raise Exception()
     
     if len(templist)!=0:

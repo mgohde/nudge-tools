@@ -33,6 +33,14 @@ def sanitize(text):
     return newstr
 
 
+def sanitize_nodename(nodename):
+    try:
+        test=int(nodename)
+        return 'N%d' % nodename
+    except:
+        return nodename
+
+
 def readstory(infile):
     contents=infile.read()
     curid=1
@@ -48,6 +56,7 @@ def readstory(infile):
     
     for subnode in root:
         snid=subnode.attrib['id']
+        snid=sanitize_nodename(snid)
         textnode=nodesearch("text", subnode)
         answernode=nodesearch("answers", subnode)
         
@@ -67,7 +76,7 @@ def readstory(infile):
             #print "INSERT INTO answers VALUES ('%s','%s','%s','%s')" % (storytitle, snid, answerchoice, sanitize(optiontextnode.text))
             
             for d in destsearch:
-                print '  %s -- %s [ label="%s" ];' % (an_name, d.text, d.attrib['p'])
+                print '  %s -- %s [ label="%s" ];' % (an_name, sanitize_nodename(d.text), d.attrib['p'])
                 resid+=1
             anid=anid+1
             

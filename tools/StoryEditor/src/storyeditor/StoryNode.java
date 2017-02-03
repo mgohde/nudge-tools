@@ -23,6 +23,7 @@ public class StoryNode
     
     public StoryNode()
     {
+        name="";
         text="";
         destList=new ArrayList<>();
         weightList=new ArrayList<>();
@@ -124,5 +125,19 @@ public class StoryNode
         }
         
         return s;
+    }
+    
+    /**
+     * Returns whether the current StoryNode has all fields filled in.
+     * @return 
+     */
+    public boolean isComplete()
+    {
+        boolean completeness=true;
+        
+        completeness=completeness&&(this.name!=null)&&(this.text!=null);
+        completeness=completeness&&(!this.respList.isEmpty());
+        
+        return completeness;
     }
 }

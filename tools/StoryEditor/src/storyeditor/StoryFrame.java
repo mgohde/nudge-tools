@@ -11,10 +11,13 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -23,7 +26,9 @@ import javax.swing.event.ListSelectionListener;
  * @author mgohde
  */
 public class StoryFrame extends javax.swing.JFrame {
+    StoryNode lastSelectedStoryNode;
     ArrayList<StoryNode> rawNodeList;
+    int lastSelectedStoryNodeIndex;
     Story internalStory;
     /**
      * Creates new form NewJFrame
@@ -33,6 +38,7 @@ public class StoryFrame extends javax.swing.JFrame {
         initComponents();
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
+        lastSelectedStoryNode=null;
         
         nodeNameList.addListSelectionListener(new ListSelectionListener()
         {
@@ -44,16 +50,43 @@ public class StoryFrame extends javax.swing.JFrame {
             }
                     
         });
+        
+        codeBox.setTabSize(4);
     }
     
     private void dispatchNodeNameEvent(ListSelectionEvent lse)
     {
         int idx=lse.getLastIndex();
         StoryNode n;
+        int realIdx;
+        int i;
+        ListSelectionModel m;
         
-        n=this.internalStory.nodeList.get(idx);
-        System.out.println("Selected story node "+n.name);
-        codeBox.setText(n.toString());
+        m=this.nodeNameList.getSelectionModel();
+        realIdx=m.getMinSelectionIndex();
+        
+        for(i=m.getMinSelectionIndex();i<m.getMaxSelectionIndex();i++)
+        {
+            if(m.isSelectedIndex(i))
+            {
+                realIdx=i;
+            }
+        }
+        
+        idx=realIdx;
+        if(idx<this.internalStory.nodeList.size())
+        {
+            if(idx==-1)
+            {
+                idx=1;
+            }
+            
+            n=this.internalStory.nodeList.get(idx);
+            System.out.println("Selected story node "+n.name);
+            codeBox.setText(n.toString());
+            this.lastSelectedStoryNode=n;
+            this.lastSelectedStoryNodeIndex=idx;
+        }
     }
 
     /**
@@ -76,9 +109,6 @@ public class StoryFrame extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         codeBox = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        attributeNameList = new javax.swing.JList();
         editButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JToggleButton();
         newItemButton = new javax.swing.JButton();
@@ -128,15 +158,21 @@ public class StoryFrame extends javax.swing.JFrame {
 
         jLabel2.setText("Node");
 
-        jLabel3.setText("Attribute");
-
-        jScrollPane5.setViewportView(attributeNameList);
-
         editButton.setText("Edit");
 
         deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         newItemButton.setText("New");
+        newItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newItemButtonActionPerformed(evt);
+            }
+        });
 
         newItem.setText("File");
 
@@ -198,13 +234,10 @@ public class StoryFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(editButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(newItemButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(26, 26, 26)
-                        .addComponent(jLabel2)
-                        .addGap(48, 48, 48)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabel2)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
@@ -232,15 +265,11 @@ public class StoryFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(newItemButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(editButton)
@@ -274,8 +303,10 @@ public class StoryFrame extends javax.swing.JFrame {
         
         this.nodeNameList.setModel(m);
         
-        m=new DefaultListModel();
-        attributeNameList.setModel(m);
+        if(this.lastSelectedStoryNode!=null)
+        {
+            this.codeBox.setText(this.lastSelectedStoryNode.toString());
+        }
         //TODO: Add something for selected nodes, etc.
     }
     
@@ -327,8 +358,57 @@ public class StoryFrame extends javax.swing.JFrame {
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         //TODO: Add code for manual node modification and insertion.
+        String textContent=codeBox.getText();
+        StoryNode newNode;
+        
+        //Determine the currently selected field:
+        if(this.lastSelectedStoryNode!=null)
+        {
+            String lineList[]=textContent.split("\n");
+            System.out.println("Text content: "+textContent);
+            ArrayList<String> lines=new ArrayList<>();
+            
+            lines.addAll(Arrays.asList(lineList));
+            
+            newNode=new StoryNode();
+            newNode.parse(lines);
+            this.internalStory.nodeList.set(this.lastSelectedStoryNodeIndex, newNode);
+            this.lastSelectedStoryNode=newNode;
+        }
+        
         updateFields();
     }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void newItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newItemButtonActionPerformed
+        //Creates a new node depending on the contents of a dialog.
+        String newNodeName;
+        
+        newNodeName=(String) JOptionPane.showInputDialog(this, "Enter new node name:");
+        
+        if(newNodeName!=null)
+        {
+            StoryNode n=new StoryNode();
+            n.name=newNodeName;
+            this.internalStory.nodeList.add(n);
+            updateFields();
+        }
+    }//GEN-LAST:event_newItemButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        this.internalStory.nodeList.remove(this.lastSelectedStoryNode);
+        this.lastSelectedStoryNode=null;
+        if(this.lastSelectedStoryNodeIndex>0)
+        {
+            this.lastSelectedStoryNodeIndex--;
+        }
+        
+        else
+        {
+            this.lastSelectedStoryNodeIndex=0;
+        }
+        
+        updateFields();
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -367,7 +447,6 @@ public class StoryFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
-    private javax.swing.JList attributeNameList;
     private javax.swing.JTextArea codeBox;
     private javax.swing.JToggleButton deleteButton;
     private javax.swing.JPanel drawingPanel;
@@ -376,14 +455,12 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuItem newButton;
     private javax.swing.JMenu newItem;

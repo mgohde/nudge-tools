@@ -45,6 +45,8 @@ public class StoryNode
         String upperCaseTok;
         
         textIndentationLevel=Story.getIndentationLevel(lines.get(1));
+        System.out.println("lines.get(1): "+lines.get(1));
+        System.out.println("textIndentationlevel: "+textIndentationLevel);
         //The first line should give us a node name:
         line=lines.get(0);
         //Remove the colon at the end of the line:
@@ -57,11 +59,14 @@ public class StoryNode
             
             //If we're on the base indentation level for the block, then attempt
             //to check for special keywords, etc.
-            if((Story.getIndentationLevel(line)==textIndentationLevel)&&(!subBlockStarted))
+            System.out.println("Line: "+line);
+            System.out.println("Indentation level: "+Story.getIndentationLevel(line));
+            if((Story.getIndentationLevel(line)==textIndentationLevel))//&&(!subBlockStarted))
             {
                 if(toks.length!=0)
                 {
                     upperCaseTok=toks[0].toUpperCase();
+                    System.out.println("upperCaseTok: "+upperCaseTok);
                     
                     if(upperCaseTok.equals("NOTE:")||upperCaseTok.equals("COMMENT:"))
                     {
@@ -105,8 +110,10 @@ public class StoryNode
             else
             {
                 Response r=new Response();
+                System.out.println("Proposed response line: "+line.trim());
                 if(r.readResponseLine(line.trim()))
                 {
+                    System.out.println("Response accepted.");
                     this.respList.add(r);
                 }
             }
@@ -119,7 +126,7 @@ public class StoryNode
         String s=name;
         
         s=s+":\n";
-        s=s+"\t"+text+"\n";
+        s=s+"\t"+text.trim()+"\n";
         s=s+"\t"+"Responses:\n";
         
         for(Response r:this.respList)
@@ -163,14 +170,18 @@ public class StoryNode
         g.drawString(this.name, img.getWidth()/2, img.getHeight()/2);
         
         //Now draw lines to all of the subnodes:
-        destColIdx=img.getWidth()*3/4;
-        heightPerDest=img.getHeight()/this.respList.size();
         
-        for(int i=0;i<respList.size();i++)
+        if(!this.respList.isEmpty())
         {
-            Response r=respList.get(i);
-            g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
-            g.drawString(r.destNames.get(0), destColIdx, (heightPerDest*i+15));
+            heightPerDest=img.getHeight()/this.respList.size();
+            destColIdx=img.getWidth()*3/4;
+
+            for(int i=0;i<respList.size();i++)
+            {
+                Response r=respList.get(i);
+                g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
+                g.drawString(r.destNames.get(0), destColIdx, (heightPerDest*i+15));
+            }
         }
     }
 }

@@ -380,6 +380,13 @@ public class StoryFrame extends javax.swing.JFrame {
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         //TODO: Add code for manual node modification and insertion.
         String textContent=codeBox.getText();
+        
+        //This is a quick workaround for a bug in the storynode parser.
+        //(ie. every node's response list must end with a newline.)
+        if(textContent.charAt(textContent.length()-1)!='\n')
+        {
+            textContent+="\n";
+        }
         StoryNode newNode;
         
         //Determine the currently selected field:
@@ -390,6 +397,7 @@ public class StoryFrame extends javax.swing.JFrame {
             ArrayList<String> lines=new ArrayList<>();
             
             lines.addAll(Arrays.asList(lineList));
+            System.out.println("Number of lines: "+lines.size());
             
             newNode=new StoryNode();
             newNode.parse(lines);

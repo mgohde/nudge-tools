@@ -156,6 +156,7 @@ public class StoryNode
         Graphics g;
         int heightPerDest;
         int destColIdx;
+        int numDests=0;
         g=img.getGraphics();
         
         if(clearImg)
@@ -173,14 +174,29 @@ public class StoryNode
         
         if(!this.respList.isEmpty())
         {
-            heightPerDest=img.getHeight()/this.respList.size();
+            //Get all responses:
+            for(Response r:respList)
+            {
+                for(String str:r.destNames)
+                {
+                    numDests++;
+                }
+            }
+            
+            heightPerDest=img.getHeight()/numDests;
             destColIdx=img.getWidth()*3/4;
+            
+            int ctr=0;
 
             for(int i=0;i<respList.size();i++)
             {
                 Response r=respList.get(i);
-                g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
-                g.drawString(r.destNames.get(0), destColIdx, (heightPerDest*i+15));
+                for(int j=0;j<r.destNames.size();j++)
+                {
+                    g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*ctr+15));
+                    g.drawString(r.destNames.get(j), destColIdx, (heightPerDest*ctr+15));
+                    ctr++;
+                }
             }
         }
         

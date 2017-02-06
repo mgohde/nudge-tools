@@ -102,7 +102,7 @@ public class StoryFrame extends javax.swing.JFrame {
         
         if(this.lastSelectedStoryNode!=null)
         {
-            this.lastSelectedStoryNode.drawNode(p.getImg(), true);
+            this.lastSelectedStoryNode.drawNode(p.getImg(), true, this.internalStory);
             p.repaint();
         }
     }
@@ -326,7 +326,7 @@ public class StoryFrame extends javax.swing.JFrame {
         //Something to do with drawingPanel.
         if(this.lastSelectedStoryNode!=null)
         {
-            this.lastSelectedStoryNode.drawNode(p.getImg(), true);
+            this.lastSelectedStoryNode.drawNode(p.getImg(), true, this.internalStory);
             p.repaint();
         }
     }

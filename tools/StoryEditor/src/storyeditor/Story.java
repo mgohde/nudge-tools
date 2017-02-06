@@ -139,4 +139,22 @@ public class Story
         
         return s;
     }
+    
+    public ArrayList<StoryNode> findParents(String destName)
+    {
+        ArrayList<StoryNode> retList=new ArrayList<>();
+        
+        for(StoryNode n:this.nodeList)
+        {
+            for(Response r:n.respList)
+            {
+                if(r.pointsToNode(destName))
+                {
+                    retList.add(n);
+                }
+            }
+        }
+        
+        return retList;
+    }
 }

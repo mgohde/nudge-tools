@@ -151,7 +151,7 @@ public class StoryNode
         return completeness;
     }
     
-    public void drawNode(BufferedImage img, boolean clearImg)
+    public void drawNode(BufferedImage img, boolean clearImg, Story s)
     {
         Graphics g;
         int heightPerDest;
@@ -181,6 +181,21 @@ public class StoryNode
                 Response r=respList.get(i);
                 g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
                 g.drawString(r.destNames.get(0), destColIdx, (heightPerDest*i+15));
+            }
+        }
+        
+        //Attempt to draw parents:
+        ArrayList<StoryNode> parents=s.findParents(this.name);
+        if(!parents.isEmpty())
+        {
+            heightPerDest=img.getHeight()/parents.size();
+            destColIdx=15;
+            
+            for(int i=0;i<parents.size();i++)
+            {
+                StoryNode p=parents.get(i);
+                g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
+                g.drawString(p.name, destColIdx, (heightPerDest*i+15));
             }
         }
     }

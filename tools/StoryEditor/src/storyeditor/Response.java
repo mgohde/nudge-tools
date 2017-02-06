@@ -26,6 +26,18 @@ public class Response
         prompt="";
     }
     
+    public boolean pointsToNode(String nodeName)
+    {
+        boolean retV=false;
+        
+        for(String s:destNames)
+        {
+            retV=retV||s.equals(nodeName);
+        }
+        
+        return retV;
+    }
+    
     public boolean readResponseLine(String l)
     {
         String promptDests[]=l.split("->");

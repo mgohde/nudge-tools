@@ -6,6 +6,9 @@
 
 package storyeditor;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
@@ -139,5 +142,35 @@ public class StoryNode
         completeness=completeness&&(!this.respList.isEmpty());
         
         return completeness;
+    }
+    
+    public void drawNode(BufferedImage img, boolean clearImg)
+    {
+        Graphics g;
+        int heightPerDest;
+        int destColIdx;
+        g=img.getGraphics();
+        
+        if(clearImg)
+        {
+            g.setColor(Color.white);
+            g.fillRect(0, 0, img.getWidth(), img.getHeight());
+        }
+        
+        g.setColor(Color.black);
+        
+        //Attempt to draw contents:
+        g.drawString(this.name, img.getWidth()/2, img.getHeight()/2);
+        
+        //Now draw lines to all of the subnodes:
+        destColIdx=img.getWidth()*3/4;
+        heightPerDest=img.getHeight()/this.respList.size();
+        
+        for(int i=0;i<respList.size();i++)
+        {
+            Response r=respList.get(i);
+            g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
+            g.drawString(r.destNames.get(0), destColIdx, (heightPerDest*i+15));
+        }
     }
 }

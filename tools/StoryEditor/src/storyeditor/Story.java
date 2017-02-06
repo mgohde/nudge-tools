@@ -84,6 +84,22 @@ public class Story
             }
         }
         
+        System.out.println("Does stringList still have data? "+(!stringList.isEmpty()));
+        
+        if(!stringList.isEmpty())
+        {
+            System.out.println("Remaining content: ");
+            for(String s:stringList)
+            {
+                System.out.println(s);
+            }
+            
+            curNode=new StoryNode();
+            curNode.parse(stringList);
+            tempList.add(curNode);
+            stringList.clear();
+        }
+        
         this.nodeList=tempList;
     }
     
@@ -99,9 +115,12 @@ public class Story
     
     public void saveStory(File f) throws FileNotFoundException
     {
+        System.out.println("Saving story to "+f);
         PrintWriter pw=new PrintWriter(f);
         
         pw.print(this.toString());
+        System.out.println("Contents printed:");
+        System.out.println(this.toString());
         
         pw.flush();
         pw.close();

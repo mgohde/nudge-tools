@@ -5,6 +5,8 @@
  */
 package storyeditor;
 
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -30,6 +33,7 @@ public class StoryFrame extends javax.swing.JFrame {
     ArrayList<StoryNode> rawNodeList;
     int lastSelectedStoryNodeIndex;
     Story internalStory;
+    DrawPanel p;
     /**
      * Creates new form NewJFrame
      */
@@ -52,6 +56,14 @@ public class StoryFrame extends javax.swing.JFrame {
         });
         
         codeBox.setTabSize(4);
+        
+        p=new DrawPanel();
+        p.setMinimumSize(new Dimension(100, 100));
+        this.drawingPane.add(p);
+        p.setSize(drawingPane.getWidth(), drawingPane.getHeight());
+        BufferedImage b=new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        p.setImg(b);
+        updateFields();
     }
     
     private void dispatchNodeNameEvent(ListSelectionEvent lse)
@@ -78,7 +90,7 @@ public class StoryFrame extends javax.swing.JFrame {
         {
             if(idx==-1)
             {
-                idx=1;
+                idx=0;
             }
             
             n=this.internalStory.nodeList.get(idx);
@@ -86,6 +98,12 @@ public class StoryFrame extends javax.swing.JFrame {
             codeBox.setText(n.toString());
             this.lastSelectedStoryNode=n;
             this.lastSelectedStoryNodeIndex=idx;
+        }
+        
+        if(this.lastSelectedStoryNode!=null)
+        {
+            this.lastSelectedStoryNode.drawNode(p.getImg(), true);
+            p.repaint();
         }
     }
 
@@ -103,15 +121,14 @@ public class StoryFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         nodeNameList = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
         updateButton = new javax.swing.JButton();
-        drawingPanel = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         codeBox = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        editButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JToggleButton();
         newItemButton = new javax.swing.JButton();
+        storyTitleButton = new javax.swing.JButton();
+        drawingPane = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         newItem = new javax.swing.JMenu();
         newButton = new javax.swing.JMenuItem();
@@ -132,8 +149,6 @@ public class StoryFrame extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(jScrollPane2);
 
-        jLabel1.setText("Code:");
-
         updateButton.setText("Update");
         updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -141,24 +156,11 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout drawingPanelLayout = new javax.swing.GroupLayout(drawingPanel);
-        drawingPanel.setLayout(drawingPanelLayout);
-        drawingPanelLayout.setHorizontalGroup(
-            drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        drawingPanelLayout.setVerticalGroup(
-            drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         codeBox.setColumns(20);
         codeBox.setRows(5);
         jScrollPane4.setViewportView(codeBox);
 
         jLabel2.setText("Node");
-
-        editButton.setText("Edit");
 
         deleteButton.setText("Delete");
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
@@ -173,6 +175,24 @@ public class StoryFrame extends javax.swing.JFrame {
                 newItemButtonActionPerformed(evt);
             }
         });
+
+        storyTitleButton.setText("Story title...");
+        storyTitleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                storyTitleButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout drawingPaneLayout = new javax.swing.GroupLayout(drawingPane);
+        drawingPane.setLayout(drawingPaneLayout);
+        drawingPaneLayout.setHorizontalGroup(
+            drawingPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        drawingPaneLayout.setVerticalGroup(
+            drawingPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         newItem.setText("File");
 
@@ -228,53 +248,45 @@ public class StoryFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(editButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(newItemButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addComponent(jLabel2)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(updateButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE))))
-                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(storyTitleButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                                .addComponent(newItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(updateButton))
+                            .addComponent(jScrollPane4))
+                        .addContainerGap())
+                    .addComponent(drawingPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(drawingPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(updateButton)
-                            .addComponent(jLabel1))
+                            .addComponent(newItemButton)
+                            .addComponent(deleteButton)
+                            .addComponent(storyTitleButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(newItemButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(editButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteButton)))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -307,7 +319,16 @@ public class StoryFrame extends javax.swing.JFrame {
         {
             this.codeBox.setText(this.lastSelectedStoryNode.toString());
         }
+        
+        this.setTitle("Editing: "+this.internalStory.title);
         //TODO: Add something for selected nodes, etc.
+        
+        //Something to do with drawingPanel.
+        if(this.lastSelectedStoryNode!=null)
+        {
+            this.lastSelectedStoryNode.drawNode(p.getImg(), true);
+            p.repaint();
+        }
     }
     
     private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
@@ -410,6 +431,17 @@ public class StoryFrame extends javax.swing.JFrame {
         updateFields();
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void storyTitleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_storyTitleButtonActionPerformed
+        String newTitle=(String) JOptionPane.showInputDialog(this, "Enter new story title");
+        
+        if(newTitle!=null)
+        {
+            this.internalStory.title=newTitle;
+        }
+        
+        updateFields();
+    }//GEN-LAST:event_storyTitleButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -449,11 +481,9 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutItem;
     private javax.swing.JTextArea codeBox;
     private javax.swing.JToggleButton deleteButton;
-    private javax.swing.JPanel drawingPanel;
-    private javax.swing.JButton editButton;
+    private javax.swing.JPanel drawingPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -468,6 +498,8 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JList nodeNameList;
     private javax.swing.JMenuItem openItem;
     private javax.swing.JMenuItem saveItem;
+    private javax.swing.JButton storyTitleButton;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
+
 }

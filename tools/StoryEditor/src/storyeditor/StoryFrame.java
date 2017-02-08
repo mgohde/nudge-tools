@@ -34,11 +34,13 @@ public class StoryFrame extends javax.swing.JFrame {
     int lastSelectedStoryNodeIndex;
     Story internalStory;
     DrawPanel p;
+    DefaultListModel nodeNameListModel;
     /**
      * Creates new form NewJFrame
      */
     public StoryFrame() 
     {
+        DefaultListModel m;
         initComponents();
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
@@ -64,6 +66,9 @@ public class StoryFrame extends javax.swing.JFrame {
         BufferedImage b=new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB);
         p.setImg(b);
         updateFields();
+        m=new DefaultListModel();
+        this.nodeNameList.setModel(m);
+        this.nodeNameListModel=m;
     }
     
     private void dispatchNodeNameEvent(ListSelectionEvent lse)
@@ -86,6 +91,8 @@ public class StoryFrame extends javax.swing.JFrame {
         }
         
         idx=realIdx;
+        System.out.println("Index: "+idx);
+        System.out.println("Nodelist size: "+internalStory.nodeList.size());
         if(idx<this.internalStory.nodeList.size())
         {
             if(idx==-1)
@@ -306,14 +313,22 @@ public class StoryFrame extends javax.swing.JFrame {
      */
     private void updateFields()
     {
-        DefaultListModel m=new DefaultListModel();
+        //Determine which nodes are not present in the current list
+        //and add them as appropriate.
+        DefaultListModel m=this.nodeNameListModel;
         
         for(StoryNode n:this.internalStory.nodeList)
         {
-            m.addElement(n.name);
+            if(!m.contains(n.name))
+            {
+                m.addElement(n.name);
+            }
         }
         
-        this.nodeNameList.setModel(m);
+        //TODO: add checks to see if this is viable.
+        System.out.println("Index as of field update: "+this.lastSelectedStoryNodeIndex);
+        this.nodeNameList.setSelectedIndex(this.lastSelectedStoryNodeIndex);
+        System.out.println("Selected index: "+this.nodeNameList.getSelectedIndex());
         
         if(this.lastSelectedStoryNode!=null)
         {
@@ -378,7 +393,6 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_saveItemActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        //TODO: Add code for manual node modification and insertion.
         String textContent=codeBox.getText();
         
         //This is a quick workaround for a bug in the storynode parser.
@@ -404,6 +418,8 @@ public class StoryFrame extends javax.swing.JFrame {
             this.internalStory.nodeList.set(this.lastSelectedStoryNodeIndex, newNode);
             this.lastSelectedStoryNode=newNode;
         }
+        
+        System.out.println("In update, last selected index: "+this.lastSelectedStoryNodeIndex);
         
         updateFields();
     }//GEN-LAST:event_updateButtonActionPerformed

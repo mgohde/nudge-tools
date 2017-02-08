@@ -35,7 +35,6 @@ public class DrawPanel extends JPanel
     @Override
     public void paintComponent(Graphics g)
     {
-        System.out.println("Drawing stuff.");
         super.paintComponent(g);
         g.drawImage(img, 0, 0, this);
     }

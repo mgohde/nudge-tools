@@ -110,10 +110,8 @@ public class StoryNode
             else
             {
                 Response r=new Response();
-                System.out.println("Proposed response line: "+line.trim());
                 if(r.readResponseLine(line.trim()))
                 {
-                    System.out.println("Response accepted.");
                     this.respList.add(r);
                 }
             }
@@ -197,7 +195,12 @@ public class StoryNode
                     String destName=r.destNames.get(i);
                     int destWeight=r.destWeights.get(i);
                     //Determine if the selected child node exists:
-                    if(s.findNode(destName)==null)
+                    if(destName.equals("END"))
+                    {
+                        g.setColor(Color.blue);
+                    }
+                    
+                    else if(s.findNode(destName)==null)
                     {
                         g.setColor(Color.red);
                     }

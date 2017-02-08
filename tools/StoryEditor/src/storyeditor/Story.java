@@ -140,6 +140,21 @@ public class Story
         return s;
     }
     
+    public StoryNode findNode(String nodeName)
+    {
+        StoryNode n=null;
+        
+        for(StoryNode newN:this.nodeList)
+        {
+            if(newN.name.equals(nodeName))
+            {
+                n=newN;
+            }
+        }
+        
+        return n;
+    }
+    
     public ArrayList<StoryNode> findParents(String destName)
     {
         ArrayList<StoryNode> retList=new ArrayList<>();

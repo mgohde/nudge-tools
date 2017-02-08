@@ -156,6 +156,7 @@ public class StoryNode
         Graphics g;
         int heightPerDest;
         int destColIdx;
+        int destWeightColIdx;
         int numDests=0;
         g=img.getGraphics();
         
@@ -171,7 +172,6 @@ public class StoryNode
         g.drawString(this.name, img.getWidth()/2, img.getHeight()/2);
         
         //Now draw lines to all of the subnodes:
-        
         if(!this.respList.isEmpty())
         {
             //Get all responses:
@@ -185,17 +185,33 @@ public class StoryNode
             
             heightPerDest=img.getHeight()/numDests;
             destColIdx=img.getWidth()*3/4;
+            destWeightColIdx=img.getWidth()*5/8;
             
             int ctr=0;
+            int x, y;
+            x=img.getWidth()/2+(img.getWidth()-destColIdx)/2;
 
-            for(int i=0;i<respList.size();i++)
-            {
-                Response r=respList.get(i);
-                for(int j=0;j<r.destNames.size();j++)
+            for (Response r : respList) {
+                for(int i=0;i<r.destNames.size();i++)
                 {
+                    String destName=r.destNames.get(i);
+                    int destWeight=r.destWeights.get(i);
+                    //Determine if the selected child node exists:
+                    if(s.findNode(destName)==null)
+                    {
+                        g.setColor(Color.red);
+                    }
+                    
                     g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*ctr+15));
-                    g.drawString(r.destNames.get(j), destColIdx, (heightPerDest*ctr+15));
+                    
+                    g.drawString(destName, destColIdx, heightPerDest*ctr+15);
+                    
+                    //TODO: Find a better way to compute the constant offset here.
+                    y=heightPerDest/2*(ctr)+80;
+                    g.drawString(""+destWeight, x, y);
                     ctr++;
+                    
+                    g.setColor(Color.black);
                 }
             }
         }

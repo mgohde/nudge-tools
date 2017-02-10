@@ -51,6 +51,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Import from XML..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exportMenuItem">
               <Properties>
@@ -89,11 +92,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sanityTestItemActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="generateReportItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Generate report..."/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>

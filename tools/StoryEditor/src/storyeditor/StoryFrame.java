@@ -149,7 +149,6 @@ public class StoryFrame extends javax.swing.JFrame {
         editMenu = new javax.swing.JMenu();
         toolsMenu = new javax.swing.JMenu();
         sanityTestItem = new javax.swing.JMenuItem();
-        generateReportItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutItem = new javax.swing.JMenuItem();
 
@@ -231,6 +230,11 @@ public class StoryFrame extends javax.swing.JFrame {
         newItem.add(jSeparator1);
 
         importMenuItem.setText("Import from XML...");
+        importMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importMenuItemActionPerformed(evt);
+            }
+        });
         newItem.add(importMenuItem);
 
         exportMenuItem.setText("Export as XML...");
@@ -264,9 +268,6 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
         toolsMenu.add(sanityTestItem);
-
-        generateReportItem.setText("Generate report...");
-        toolsMenu.add(generateReportItem);
 
         jMenuBar1.add(toolsMenu);
 
@@ -530,6 +531,10 @@ public class StoryFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_exportMenuItemActionPerformed
 
+    private void importMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_importMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -572,7 +577,6 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JPanel drawingPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exportMenuItem;
-    private javax.swing.JMenuItem generateReportItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JLabel jLabel2;

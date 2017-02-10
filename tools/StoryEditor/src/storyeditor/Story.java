@@ -172,4 +172,128 @@ public class Story
         
         return retList;
     }
+    
+    public String generateXML()
+    {
+        String s="";
+        
+        s+="<story title=\""+this.title+"\">\n";
+        
+        for(StoryNode n:this.nodeList)
+        {
+            s+=n.generateXML();
+        }
+        
+        s+="</story>\n";
+        return s;
+    }
+    
+    public void exportAsXML(File f) throws FileNotFoundException
+    {
+        PrintWriter pw=new PrintWriter(f);
+        
+        pw.print(this.generateXML());
+        
+        pw.flush();
+        pw.close();
+    }
+    
+    private void checkNodeWeights(SanityReport r)
+    {
+        for(StoryNode n:this.nodeList)
+        {
+            r.allProbabilitiesCorrect=r.allProbabilitiesCorrect&&n.checkNodeWeights(r.probErrMessages);
+        }
+    }
+    
+    private void checkSelfReferentialNodes(SanityReport r)
+    {
+        for(StoryNode n:this.nodeList)
+        {
+            r.noSelfReferentialNodes=r.noSelfReferentialNodes&&n.checkSelfReferentialNodes(r.selfReferentialNodeNames);
+        }
+    }
+    
+    //This is, as said on the tin, an extremely expensive and poorly implemented
+    //check on all nodes to ensure that circular references are not possible.
+    private void extremelyExpensiveAndPoorlyImplementedReferenceCheck(SanityReport r)
+    {
+       r.noCircularReferences=rcsvTerribleReferenceCheck(this.nodeList.get(0), r);
+    }
+    
+    private StoryNode getNode(String nodeName)
+    {
+        StoryNode n=null;
+        
+        for(StoryNode tmp:this.nodeList)
+        {
+            if(tmp.name.endsWith(nodeName))
+            {
+                n=tmp;
+                break;
+            }
+        }
+        
+        return n;
+    }
+    
+    private boolean rcsvTerribleReferenceCheck(StoryNode n, SanityReport r)
+    {
+        if(n.hasBeenVisited)
+        {
+            return false;
+        }
+        
+        else if(n.respList.isEmpty())
+        {
+            r.circularReferenceCheckMessages.add("Error with node: "+n.name+". Node has no children or endpoints.");
+            return false;
+        }
+        
+        else
+        {
+            n.hasBeenVisited=true;
+            
+            ArrayList<String> dests=n.getCompleteDestList();
+            
+            //Recurse through all of this node's children and perform the same circular sanity check.
+            for(String s:dests)
+            {
+                StoryNode tmp=getNode(s);
+                
+                if(tmp!=null)
+                {
+                    //So that we can break on a self-referential node:
+                    if(!rcsvTerribleReferenceCheck(tmp, r))
+                    {
+                        return false;
+                    }
+                }
+                
+                else if(!s.toUpperCase().equals("END"))
+                {
+                    r.circularReferenceCheckMessages.add("Error with node: "+n.name+". Reference is made to another node that neither exists nor is an END node.");
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    public void checkCanBeCompleted(SanityReport r)
+    {
+        
+    }
+    
+    public SanityReport sanityTest()
+    {
+        SanityReport r=new SanityReport();
+        
+        checkNodeWeights(r);
+        checkSelfReferentialNodes(r);
+        extremelyExpensiveAndPoorlyImplementedReferenceCheck(r);
+        
+        return r;
+    }
 }

@@ -141,8 +141,15 @@ public class StoryFrame extends javax.swing.JFrame {
         newButton = new javax.swing.JMenuItem();
         openItem = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        importMenuItem = new javax.swing.JMenuItem();
+        exportMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
+        toolsMenu = new javax.swing.JMenu();
+        sanityTestItem = new javax.swing.JMenuItem();
+        generateReportItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutItem = new javax.swing.JMenuItem();
 
@@ -206,7 +213,7 @@ public class StoryFrame extends javax.swing.JFrame {
         newButton.setText("New");
         newItem.add(newButton);
 
-        openItem.setText("Open");
+        openItem.setText("Open...");
         openItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openItemActionPerformed(evt);
@@ -214,13 +221,26 @@ public class StoryFrame extends javax.swing.JFrame {
         });
         newItem.add(openItem);
 
-        saveItem.setText("Save");
+        saveItem.setText("Save...");
         saveItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveItemActionPerformed(evt);
             }
         });
         newItem.add(saveItem);
+        newItem.add(jSeparator1);
+
+        importMenuItem.setText("Import from XML...");
+        newItem.add(importMenuItem);
+
+        exportMenuItem.setText("Export as XML...");
+        exportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportMenuItemActionPerformed(evt);
+            }
+        });
+        newItem.add(exportMenuItem);
+        newItem.add(jSeparator2);
 
         jMenuItem1.setText("Exit");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -234,6 +254,21 @@ public class StoryFrame extends javax.swing.JFrame {
 
         editMenu.setText("Edit");
         jMenuBar1.add(editMenu);
+
+        toolsMenu.setText("Tools");
+
+        sanityTestItem.setText("Sanity test");
+        sanityTestItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sanityTestItemActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(sanityTestItem);
+
+        generateReportItem.setText("Generate report...");
+        toolsMenu.add(generateReportItem);
+
+        jMenuBar1.add(toolsMenu);
 
         helpMenu.setText("Help");
 
@@ -466,6 +501,35 @@ public class StoryFrame extends javax.swing.JFrame {
         updateFields();
     }//GEN-LAST:event_storyTitleButtonActionPerformed
 
+    private void sanityTestItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sanityTestItemActionPerformed
+        SanityReport r=this.internalStory.sanityTest();
+        
+        ErrorFrame eFrame=new ErrorFrame(r.toString());
+        eFrame.setVisible(true);
+    }//GEN-LAST:event_sanityTestItemActionPerformed
+
+    private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
+        JFileChooser jfc=new JFileChooser();
+        
+        int retV=jfc.showSaveDialog(this);
+        
+        if(retV==JFileChooser.APPROVE_OPTION)
+        {
+            System.out.println("Export file selected: "+jfc.getSelectedFile());
+            try {
+                this.internalStory.exportAsXML(jfc.getSelectedFile());
+                updateFields();
+            } catch (IOException ex) {
+                System.err.println("HOOOOooOOOoOoOooooooOooooOooooOOO! "+jfc.getSelectedFile());
+            }
+        }
+        
+        else
+        {
+            System.out.println("File save op discarded.");
+        }
+    }//GEN-LAST:event_exportMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -507,7 +571,10 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JToggleButton deleteButton;
     private javax.swing.JPanel drawingPane;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem exportMenuItem;
+    private javax.swing.JMenuItem generateReportItem;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -515,14 +582,18 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuItem newButton;
     private javax.swing.JMenu newItem;
     private javax.swing.JButton newItemButton;
     private javax.swing.JList nodeNameList;
     private javax.swing.JMenuItem openItem;
+    private javax.swing.JMenuItem sanityTestItem;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JButton storyTitleButton;
+    private javax.swing.JMenu toolsMenu;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 

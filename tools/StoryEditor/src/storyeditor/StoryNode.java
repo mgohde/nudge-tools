@@ -24,6 +24,8 @@ public class StoryNode
     ArrayList<Integer> weightList;
     ArrayList<Response> respList;
     
+    boolean hasBeenVisited;
+    
     public StoryNode()
     {
         name="";
@@ -31,6 +33,7 @@ public class StoryNode
         destList=new ArrayList<>();
         weightList=new ArrayList<>();
         respList=new ArrayList<>();
+        hasBeenVisited=false;
     }
     
     public void parse(ArrayList<String> lines)
@@ -233,5 +236,65 @@ public class StoryNode
                 g.drawString(p.name, destColIdx, (heightPerDest*i+15));
             }
         }
+    }
+    
+    public String generateXML()
+    {
+        String s="";
+        
+        s+="\t<node id=\""+this.name+"\">\n";
+        s+="\t\t<text>"+this.text.trim()+"</text>\n";
+        s+="\t\t<answers>\n";
+        
+        for(Response r:this.respList)
+        {
+            s+=r.generateXML();
+        }
+        
+        s+="\t\t</answers>\n";
+        s+="\t</node>\n";
+        return s;
+    }
+    
+    public boolean checkNodeWeights(ArrayList<String> errReport)
+    {
+        boolean weightsOk=true;
+        
+        for(Response r:this.respList)
+        {
+            weightsOk=weightsOk&&r.checkNodeWeights(errReport);
+        }
+        
+        return weightsOk;
+    }
+    
+    //Returns true if there are no responses for which this node references itself.
+    public boolean checkSelfReferentialNodes(ArrayList<String> errReport)
+    {
+        boolean noSelfReferences=true;
+        
+        for(Response r:this.respList)
+        {
+            noSelfReferences=noSelfReferences&&(!r.pointsToNode(this.name));
+        }
+        
+        if(!noSelfReferences)
+        {
+            errReport.add("Node "+this.name+" has itself as a destination.");
+        }
+        
+        return noSelfReferences;
+    }
+    
+    public ArrayList<String> getCompleteDestList()
+    {
+        ArrayList<String> completeDestList=new ArrayList<>();
+        
+        for(Response r:this.respList)
+        {
+            completeDestList.addAll(r.destNames);
+        }
+        
+        return completeDestList;
     }
 }

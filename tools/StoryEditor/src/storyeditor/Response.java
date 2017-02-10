@@ -105,4 +105,52 @@ public class Response
     {
         return null;
     }
+    
+    public String generateXML()
+    {
+        String s="";
+        
+        s+="\t\t\t<option>\n";
+        s+="\t\t\t\t<text>"+this.prompt+"</text>\n";
+        
+        for(int i=0;i<Math.min(this.destNames.size(), this.destWeights.size());i++)
+        {
+            //TODO: add handling for in-game rewards. Whoops.
+            s+="\t\t\t\t<dest p=\""+destWeights.get(i)+"\">"+destNames.get(i)+"</dest>\n";
+        }
+        
+        s+="\t\t\t</option>\n";
+        
+        return s;
+    }
+    
+    public boolean checkNodeWeights(ArrayList<String> errReport)
+    {
+        boolean weightsOk;
+        int weightSum=0;
+        
+        for(Integer i:this.destWeights)
+        {
+            weightSum+=i;
+        }
+        
+        weightsOk=(weightSum==100);
+        
+        //Only bother to check for specific error conditions if there is an error in weights overall.
+        if(!weightsOk)
+        {
+            if(weightSum>100)
+            {
+                errReport.add("Error for response with prompt \""+this.prompt+"\". Sum of response weights is greater than 100%");
+            }
+            
+            //The case for which weightSum==100 has been taken care of.
+            else
+            {
+                errReport.add("Error for response with prompt \""+this.prompt+"\". Sum of response weights is less than than 100%");
+            }
+        }
+        
+        return weightsOk;
+    }
 }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,7 +58,7 @@ public class XMLTranslator
         
         n=rootNode.getChildNodes();
         
-        s+=title+":\n";
+        s+="title: "+title+"\n";
         
         //This nasty mess of for-loops is to avoid having to recurse 
         //through this tree structure.
@@ -67,7 +68,7 @@ public class XMLTranslator
             if(curNode.getNodeName().equals("node"))
             {
                 //See if we can get a node id:
-                s+="\t"+curNode.getAttributes().getNamedItem("id").getTextContent()+":\n";
+                s+=curNode.getAttributes().getNamedItem("id").getTextContent()+":\n";
                 
                 NodeList textAnswers=curNode.getChildNodes();
                 
@@ -77,41 +78,65 @@ public class XMLTranslator
                     
                     if(textAnswer.getNodeName().equals("text"))
                     {
-                        s+="\t\t"+textAnswer.getTextContent()+"\n\n";
+                        s+="\t"+textAnswer.getTextContent()+"\n";
                     }
                     
                     else if(textAnswer.getNodeName().equals("answers"))
                     {
-                        s+="\t\tResponses:\n";
+                        s+="\tResponses:\n";
                         NodeList optionNodes=textAnswer.getChildNodes();
                         
                         for(int k=0;k<optionNodes.getLength();k++)
                         {
                             Node optionText=optionNodes.item(k);
                             
-                            if(optionText.getNodeName().equals("text"))
+                            //This loop depth is getting absurd.
+                            if(optionText.getNodeName().equals("option"))
                             {
-                                s+="\t\t\t"+optionText.getTextContent()+" -> ";
-                            }
-                            
-                            else if(optionText.equals("dest"))
-                            {
-                                String prob=optionText.getAttributes().getNamedItem("p").getTextContent();
+                                NodeList optionTextContentsList=optionText.getChildNodes();
+                                ArrayList<Node> filteredContentsList=new ArrayList<>();
                                 
-                                if(k!=(optionNodes.getLength()-1))
+                                //Filter through all destinations as needed:
+                                for(int l=0;l<optionTextContentsList.getLength();l++)
                                 {
-                                    //TODO: implement support for WITH statements.
-                                    s+=prob+" to "+optionText.getTextContent()+", ";
+                                    Node optionContent=optionTextContentsList.item(l);
+                                    
+                                    if(optionContent.getNodeName().equals("text")||optionContent.getNodeName().equals("dest"))
+                                    {
+                                        filteredContentsList.add(optionContent);
+                                    }
                                 }
                                 
-                                else
+                                //Iterate over all of the filtered nodes:
+                                for(int l=0;l<filteredContentsList.size();l++)
                                 {
-                                    s+=prob+" to "+optionText.getTextContent();
+                                    Node optionContent=filteredContentsList.get(l);
+                                    if(optionContent.getNodeName().equals("text"))
+                                    {
+                                        s+="\t\t"+optionContent.getTextContent()+" -> ";
+                                    }
+
+                                    else if(optionContent.getNodeName().equals("dest"))
+                                    {
+                                        String prob=optionContent.getAttributes().getNamedItem("p").getTextContent();
+                                        if(l!=(filteredContentsList.size()-1))
+                                        {
+                                            //TODO: implement support for WITH statements.
+                                            s+=prob+"% to "+optionContent.getTextContent()+", ";
+                                        }
+
+                                        else
+                                        {
+                                            s+=prob+"% to "+optionContent.getTextContent()+"\n";
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                
+                s+="\n";
             }
         }
         

@@ -6,10 +6,14 @@
 package storyeditor;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -61,6 +67,7 @@ public class StoryFrame extends javax.swing.JFrame {
         
         p=new DrawPanel();
         p.setMinimumSize(new Dimension(100, 100));
+        
         this.drawingPane.add(p);
         p.setSize(drawingPane.getWidth(), drawingPane.getHeight());
         BufferedImage b=new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -69,6 +76,21 @@ public class StoryFrame extends javax.swing.JFrame {
         m=new DefaultListModel();
         this.nodeNameList.setModel(m);
         this.nodeNameListModel=m;
+        
+        this.addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                p.setSize(drawingPane.getWidth(), drawingPane.getHeight());
+                p.setImg(new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB));
+                if(lastSelectedStoryNode!=null)
+                {
+                    lastSelectedStoryNode.drawNode(p.getImg(), true, internalStory);
+                    p.repaint();
+                }
+            }
+        });
     }
     
     private void dispatchNodeNameEvent(ListSelectionEvent lse)
@@ -314,8 +336,8 @@ public class StoryFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(drawingPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -326,10 +348,10 @@ public class StoryFrame extends javax.swing.JFrame {
                             .addComponent(storyTitleButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -532,7 +554,35 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_exportMenuItemActionPerformed
 
     private void importMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuItemActionPerformed
-        // TODO add your handling code here:
+        JFileChooser jfc=new JFileChooser();
+        
+        int retV=jfc.showOpenDialog(this);
+        
+        if(retV==JFileChooser.APPROVE_OPTION)
+        {
+            System.out.println("File selected: "+jfc.getSelectedFile());
+            Story newStory=new Story();
+            try {
+                XMLTranslator t=new XMLTranslator(jfc.getSelectedFile());
+                String contents=t.translate();
+                newStory.loadStory(contents);
+                System.out.println(contents);
+                
+                this.internalStory=newStory;
+                updateFields();
+            } catch (IOException ex) {
+                System.err.println("HOOOOooOOOoOoOooooooOooooOooooOOO! "+jfc.getSelectedFile());
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(StoryFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                Logger.getLogger(StoryFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        else
+        {
+            System.out.println("File open op discarded.");
+        }
     }//GEN-LAST:event_importMenuItemActionPerformed
 
     /**

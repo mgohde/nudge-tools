@@ -5,24 +5,17 @@
  */
 package storyeditor;
 
-import javax.swing.WindowConstants;
-
 /**
  *
  * @author mgohde
  */
-public class ErrorFrame extends javax.swing.JFrame {
+public class ServerExportFrame extends javax.swing.JFrame {
 
     /**
-     * Creates new form ErrorFrame
+     * Creates new form ServerExportFrame
      */
-    public ErrorFrame(String errText) {
+    public ServerExportFrame() {
         initComponents();
-        
-        this.errTextBox.setText(errText);
-        this.setVisible(true);
-        
-        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -34,33 +27,22 @@ public class ErrorFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        errTextBox = new javax.swing.JTextPane();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jScrollPane2.setMinimumSize(new java.awt.Dimension(320, 240));
-
-        errTextBox.setEditable(false);
-        jScrollPane2.setViewportView(errTextBox);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextPane errTextBox;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }

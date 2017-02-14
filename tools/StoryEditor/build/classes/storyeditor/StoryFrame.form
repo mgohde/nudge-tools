@@ -28,6 +28,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="New"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newButtonActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="openItem">
               <Properties>
@@ -65,6 +68,21 @@
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="serverImportItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Import from Server..."/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="serverImportItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="serverExportItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Export to Server..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>
@@ -92,6 +110,11 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sanityTestItemActionPerformed"/>
               </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="publishItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Publish..."/>
+              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>

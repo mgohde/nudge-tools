@@ -115,7 +115,7 @@ public class StoryFrame extends javax.swing.JFrame {
         idx=realIdx;
         System.out.println("Index: "+idx);
         System.out.println("Nodelist size: "+internalStory.nodeList.size());
-        if(idx<this.internalStory.nodeList.size())
+        if(idx<this.internalStory.nodeList.size()&&!this.internalStory.nodeList.isEmpty())
         {
             if(idx==-1)
             {
@@ -167,10 +167,14 @@ public class StoryFrame extends javax.swing.JFrame {
         importMenuItem = new javax.swing.JMenuItem();
         exportMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        serverImportItem = new javax.swing.JMenuItem();
+        serverExportItem = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         toolsMenu = new javax.swing.JMenu();
         sanityTestItem = new javax.swing.JMenuItem();
+        publishItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutItem = new javax.swing.JMenuItem();
 
@@ -232,6 +236,11 @@ public class StoryFrame extends javax.swing.JFrame {
         newItem.setText("File");
 
         newButton.setText("New");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
         newItem.add(newButton);
 
         openItem.setText("Open...");
@@ -268,6 +277,18 @@ public class StoryFrame extends javax.swing.JFrame {
         newItem.add(exportMenuItem);
         newItem.add(jSeparator2);
 
+        serverImportItem.setText("Import from Server...");
+        serverImportItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverImportItemActionPerformed(evt);
+            }
+        });
+        newItem.add(serverImportItem);
+
+        serverExportItem.setText("Export to Server...");
+        newItem.add(serverExportItem);
+        newItem.add(jSeparator3);
+
         jMenuItem1.setText("Exit");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -290,6 +311,9 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
         toolsMenu.add(sanityTestItem);
+
+        publishItem.setText("Publish...");
+        toolsMenu.add(publishItem);
 
         jMenuBar1.add(toolsMenu);
 
@@ -585,6 +609,36 @@ public class StoryFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_importMenuItemActionPerformed
 
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
+        if(!this.internalStory.nodeList.isEmpty())
+        {
+            //Show a confirmation dialog:
+            int retV=JOptionPane.showConfirmDialog(this, "There is a story in progress. Are you sure you want to create a new story?", "New...", JOptionPane.YES_NO_OPTION);
+            
+            if(retV==JOptionPane.NO_OPTION)
+            {
+                return;
+            }
+        }
+        
+        //Proceed:
+        this.internalStory=new Story();
+        this.lastSelectedStoryNode=null;
+        this.lastSelectedStoryNodeIndex=0;
+        this.nodeNameList.removeAll();
+        this.nodeNameListModel.clear();
+        this.nodeNameList.updateUI();
+        this.codeBox.setText("");
+        this.p.setImg(new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB));
+        this.p.updateUI();
+        updateFields();
+    }//GEN-LAST:event_newButtonActionPerformed
+
+    private void serverImportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverImportItemActionPerformed
+        ServerImportFrame f=new ServerImportFrame(this.internalStory);
+        updateFields();
+    }//GEN-LAST:event_serverImportItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -638,14 +692,18 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuItem newButton;
     private javax.swing.JMenu newItem;
     private javax.swing.JButton newItemButton;
     private javax.swing.JList nodeNameList;
     private javax.swing.JMenuItem openItem;
+    private javax.swing.JMenuItem publishItem;
     private javax.swing.JMenuItem sanityTestItem;
     private javax.swing.JMenuItem saveItem;
+    private javax.swing.JMenuItem serverExportItem;
+    private javax.swing.JMenuItem serverImportItem;
     private javax.swing.JButton storyTitleButton;
     private javax.swing.JMenu toolsMenu;
     private javax.swing.JButton updateButton;

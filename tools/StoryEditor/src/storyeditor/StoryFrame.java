@@ -634,9 +634,30 @@ public class StoryFrame extends javax.swing.JFrame {
         updateFields();
     }//GEN-LAST:event_newButtonActionPerformed
 
+    private ServerImportFrame f=null;
     private void serverImportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverImportItemActionPerformed
-        ServerImportFrame f=new ServerImportFrame(this.internalStory);
-        updateFields();
+        f=new ServerImportFrame();
+        
+        f.registerImportCallback(new Runnable()
+        {
+            public void run()
+            {
+                if(f!=null)
+                {
+                    Story s=f.getImportedStory();
+                    if(s!=null)
+                    {
+                        internalStory=s;
+                        updateFields();
+                    }
+                    
+                    else
+                    {
+                        System.err.println("Something went horribly wrong in the story callback runnable.");
+                    }
+                }
+            }
+        });
     }//GEN-LAST:event_serverImportItemActionPerformed
 
     /**

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -22,14 +23,12 @@ import javax.swing.WindowConstants;
  */
 public class ServerImportFrame extends javax.swing.JFrame 
 {
-    private Story callerStory;
     private Story newStory;
     /**
      * Creates new form ServerImportFrame
      */
-    public ServerImportFrame(Story s) {
+    public ServerImportFrame() {
         initComponents();
-        callerStory=s;
         newStory=null;
         
         //Make the import button invisible until the user queries the database for stories.
@@ -37,6 +36,7 @@ public class ServerImportFrame extends javax.swing.JFrame
         storyNameLabel.setVisible(false);
         storyListBox.setVisible(false);
         
+        this.setTitle("Import storyline from server...");
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
@@ -44,6 +44,13 @@ public class ServerImportFrame extends javax.swing.JFrame
     public Story getImportedStory()
     {
         return newStory;
+    }
+    
+    private Runnable callbackRunnable=null;
+    
+    public void registerImportCallback(Runnable r)
+    {
+        callbackRunnable=r;
     }
 
     /**
@@ -94,6 +101,11 @@ public class ServerImportFrame extends javax.swing.JFrame
         });
 
         importButton.setText("Import");
+        importButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importButtonActionPerformed(evt);
+            }
+        });
 
         storyListBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         storyListBox.addActionListener(new java.awt.event.ActionListener() {
@@ -177,8 +189,8 @@ public class ServerImportFrame extends javax.swing.JFrame
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("Attempting to query URL:");
             System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
-            System.out.println(this.userNameBox.getText());
-            System.out.println(this.passwordBox.getText());
+            //System.out.println(this.userNameBox.getText());
+            //System.out.println(this.passwordBox.getText());
             c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
             s=c.createStatement();
             
@@ -206,6 +218,7 @@ public class ServerImportFrame extends javax.swing.JFrame
         {
             
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
             System.err.println("Got SQLException. Contents: ");
             ex.printStackTrace();
         }
@@ -215,6 +228,147 @@ public class ServerImportFrame extends javax.swing.JFrame
     private void storyListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_storyListBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_storyListBoxActionPerformed
+
+    private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importButtonActionPerformed
+        String storyName=(String) this.storyListBox.getSelectedItem();
+        Story story=new Story();
+        ArrayList<DBNode> nodes=new ArrayList<>();
+        ArrayList<DBAnswer> answerNodes=new ArrayList<>();
+        
+        System.out.println("Fetching: "+storyName);
+        
+        //Moderately shamelessly copy-pasted from the story name query function above.
+        Connection c;
+        Statement s;
+        ResultSet r;
+        
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Attempting to query URL:");
+            System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
+            c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
+            s=c.createStatement();
+            
+            //Get all story names:
+            r=s.executeQuery("SELECT storylinetite,storyline FROM storytable WHERE storytitle='"+storyName+"'");
+            
+            //The next() method moves us to the next record.
+            while(r.next())
+            {
+                //The query should be two strings wide.
+                DBNode n=new DBNode();
+                n.name=r.getString(1);
+                n.text=r.getString(2);
+                nodes.add(n);
+            }
+            
+            //Now fill out the answers list:
+            r.close();
+            r=s.executeQuery("SELECT storylinetite,answer,answerchoice FROM answers WHERE storytitle='"+storyName+"'");
+            
+            while(r.next())
+            {
+                DBAnswer a=new DBAnswer();
+                a.ownerName=r.getString(1);
+                a.answer=r.getString(2);
+                a.text=r.getString(3);
+                answerNodes.add(a);
+            }
+            
+            //Now fill out the rest of the answers with the results table:
+            for(DBAnswer a:answerNodes)
+            {
+                r.close();
+                
+                r=s.executeQuery("SELECT startprob,stopprob,gotostorylinetite FROM results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
+                System.out.println("Running query: "+"SELECT startprob,stopprob,gotostorylinetite FROM results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
+                
+                while(r.next())
+                {
+                    int start=r.getInt(1);
+                    int stop=r.getInt(2);
+                    String destName=r.getString(3);
+                    
+                    a.calcProb(start, stop);
+                    a.destNodeNames.add(destName);
+                }
+            }
+            
+            if(!r.isClosed())
+            {
+                r.close();
+            }
+            
+            s.close();
+            c.close();
+            
+            //Attempt to map answers back to their DBNodes.
+            for(DBNode d:nodes)
+            {
+                for(DBAnswer a:answerNodes)
+                {
+                    if(d.name.equals(a.ownerName))
+                    {
+                        d.answers.add(a);
+                    }
+                }
+            }
+            
+            //Attempt to generate a story from the mapped DBNodes:
+            for(DBNode n:nodes)
+            {
+                StoryNode sn=new StoryNode();
+                sn.name=n.name;
+                sn.text=n.text;
+                
+                for(DBAnswer a:n.answers)
+                {
+                    Response resp;
+                    boolean createdResponse=false;
+                    
+                    //Determine if the current response is present:
+                    if((resp=sn.getResponse(a.text))==null)
+                    {
+                        resp=new Response();
+                        createdResponse=true;
+                    }
+                    
+                    resp.prompt=a.text;
+                    resp.destNames.addAll(a.destNodeNames);
+                    resp.destWeights.addAll(a.probList);
+                    
+                    if(createdResponse)
+                    {
+                        sn.respList.add(resp);
+                    }
+                }
+                
+                story.nodeList.add(sn);
+            }
+            
+            System.out.println("Managed to import story. Story contents:");
+            System.out.println(story.toString());
+            
+            story.title=storyName;
+            this.newStory=story;
+            
+            if(callbackRunnable!=null)
+            {
+                callbackRunnable.run();
+            }
+            
+            //Close the window.
+            this.dispose();
+        } catch(ClassNotFoundException e)
+        {
+            e.printStackTrace();;
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Got SQLException. Contents: ");
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_importButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField databaseNameBox;

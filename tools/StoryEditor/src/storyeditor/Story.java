@@ -296,4 +296,20 @@ public class Story
         
         return r;
     }
+    
+    /**
+     * Effectively implements dbtool's functionality.
+     * @return A string containing SQL statements.
+     */
+    public String toSQL()
+    {
+        String s="";
+        
+        for(StoryNode n:this.nodeList)
+        {
+            s+=n.toSQL(this.title);
+        }
+        
+        return s;
+    }
 }

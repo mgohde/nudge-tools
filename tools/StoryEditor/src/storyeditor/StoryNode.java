@@ -297,4 +297,29 @@ public class StoryNode
         
         return completeDestList;
     }
+    
+    public Response getResponse(String prompt)
+    {   
+        for(Response r:this.respList)
+        {
+            if(r.prompt.equals(prompt))
+            {
+                return r;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Helper function to return SQL statements for a given story node.
+     * @param storyTitle - The storyline's title.
+     * @return SQL statements.
+     */
+    public String toSQL(String storyTitle)
+    {
+        String s="";
+        
+        return s;
+    }
 }

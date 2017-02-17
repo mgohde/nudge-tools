@@ -299,15 +299,66 @@ public class Story
     
     /**
      * Effectively implements dbtool's functionality.
+     * @param stn story table name
+     * @param atn answer table name
+     * @param rtn result table name
+     * @param wtn reWard table name.
      * @return A string containing SQL statements.
      */
-    public String toSQL()
+    public String toSQL(String stn, String atn, String rtn, String wtn)
     {
         String s="";
+        int curid, position, resid;
+        
+        curid=1;
+        position=0;
+        resid=1;
+        char answerChoice;
+        String subNodeName;
+        String subNodeText;
+        int minprob, maxprob;
         
         for(StoryNode n:this.nodeList)
         {
-            s+=n.toSQL(this.title);
+            //Break object orientation a little by just having this function
+            //do all of the work by itself.
+            
+            answerChoice='A';
+            subNodeName=n.name;
+            subNodeText=n.text;
+            
+            //TODO: add reward insertion.
+            s+="INSERT INTO "+stn+" VALUES ("+curid+",'"+this.title+"','"+subNodeName+"','"+subNodeText.trim()+"',"+position+")\n";
+            
+            curid++;
+            
+            for(Response r:n.respList)
+            {
+                s+="INSERT INTO "+atn+" VALUES ('"+this.title+"','"+subNodeName+"','"+answerChoice+"','"+r.prompt+"')\n";
+                
+                minprob=0;
+                maxprob=0;
+                
+                for(int i=0;i<Math.min(r.destNames.size(), r.destWeights.size()); i++)
+                {
+                    if(r.destNames.get(i).equals("END"))
+                    {
+                        position=1;
+                    }
+                    
+                    else
+                    {
+                        position=2;
+                    }
+                    
+                    maxprob=minprob+r.destWeights.get(i);
+                    s+="INSERT INTO "+rtn+" VALUES ("+resid+",'"+this.title+"','"+subNodeName+"','"+answerChoice+"',"+minprob+","+maxprob+",'"+r.destNames.get(i)+"')\n";
+                    minprob+=r.destWeights.get(i);
+                    resid++;
+                }
+                
+                answerChoice++;
+            }
         }
         
         return s;

@@ -35,6 +35,8 @@ import org.xml.sax.SAXException;
  * @author mgohde
  */
 public class StoryFrame extends javax.swing.JFrame {
+    Settings settings;
+    
     StoryNode lastSelectedStoryNode;
     ArrayList<StoryNode> rawNodeList;
     int lastSelectedStoryNodeIndex;
@@ -48,6 +50,31 @@ public class StoryFrame extends javax.swing.JFrame {
     {
         DefaultListModel m;
         initComponents();
+        
+        //Determine if we have a settings file:
+        settings=new Settings();
+        if(settings.settingsFileExists())
+        {
+            try
+            {
+                settings.loadSettings(new File(settings.settingsFilePath));
+            } catch(IOException e)
+            {
+                System.err.println("Could not save default settings file to: "+settings.settingsFilePath);
+            }
+        }
+        
+        else
+        {
+            try
+            {
+                settings.saveSettings(new File(settings.settingsFilePath));
+            } catch(IOException e)
+            {
+                System.err.println("Could not create new settings file at "+settings.settingsFilePath);
+            }
+            
+        }
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
         lastSelectedStoryNode=null;
@@ -175,6 +202,7 @@ public class StoryFrame extends javax.swing.JFrame {
         toolsMenu = new javax.swing.JMenu();
         sanityTestItem = new javax.swing.JMenuItem();
         publishItem = new javax.swing.JMenuItem();
+        setDefaultsItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutItem = new javax.swing.JMenuItem();
 
@@ -286,6 +314,11 @@ public class StoryFrame extends javax.swing.JFrame {
         newItem.add(serverImportItem);
 
         serverExportItem.setText("Export to Server...");
+        serverExportItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverExportItemActionPerformed(evt);
+            }
+        });
         newItem.add(serverExportItem);
         newItem.add(jSeparator3);
 
@@ -314,6 +347,9 @@ public class StoryFrame extends javax.swing.JFrame {
 
         publishItem.setText("Publish...");
         toolsMenu.add(publishItem);
+
+        setDefaultsItem.setText("Set defaults...");
+        toolsMenu.add(setDefaultsItem);
 
         jMenuBar1.add(toolsMenu);
 
@@ -546,6 +582,8 @@ public class StoryFrame extends javax.swing.JFrame {
         }
         
         updateFields();
+        
+        
     }//GEN-LAST:event_storyTitleButtonActionPerformed
 
     private void sanityTestItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sanityTestItemActionPerformed
@@ -660,6 +698,11 @@ public class StoryFrame extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_serverImportItemActionPerformed
 
+    private void serverExportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverExportItemActionPerformed
+        ServerExportFrame f=new ServerExportFrame(this.internalStory);
+        
+    }//GEN-LAST:event_serverExportItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -725,6 +768,7 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JMenuItem serverExportItem;
     private javax.swing.JMenuItem serverImportItem;
+    private javax.swing.JMenuItem setDefaultsItem;
     private javax.swing.JButton storyTitleButton;
     private javax.swing.JMenu toolsMenu;
     private javax.swing.JButton updateButton;

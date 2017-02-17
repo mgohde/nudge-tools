@@ -80,6 +80,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export to Server..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="serverExportItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
             </MenuItem>
@@ -114,6 +117,11 @@
             <MenuItem class="javax.swing.JMenuItem" name="publishItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Publish..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="setDefaultsItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Set defaults..."/>
               </Properties>
             </MenuItem>
           </SubComponents>

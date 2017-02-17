@@ -5,17 +5,31 @@
  */
 package storyeditor;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author mgohde
  */
 public class ServerExportFrame extends javax.swing.JFrame {
 
+    private Story internalStory;
+    
     /**
      * Creates new form ServerExportFrame
      */
-    public ServerExportFrame() {
+    public ServerExportFrame(Story s) {
         initComponents();
+        
+        internalStory=s;
         
         this.setTitle("Export to server...");
         this.setVisible(true);
@@ -133,7 +147,65 @@ public class ServerExportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
-        //This is the meat of the export handling code.
+        Connection c;
+        Statement s;
+        PreparedStatement p;
+        ResultSet r;
+        
+        ArrayList<String> storyNameList=new ArrayList<>();
+        
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Attempting to query URL:");
+            System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
+            //System.out.println(this.userNameBox.getText());
+            //System.out.println(this.passwordBox.getText());
+            
+            c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
+            s=c.createStatement();
+            
+            //Determine if the given storyline already exists on the server:
+            boolean storyExists=false;
+            r=s.executeQuery("SELECT storytitle FROM tmpstorytable WHERE storytitle='"+this.internalStory.title+"'");
+            
+            while(r.next())
+            {
+                storyExists=true;
+            }
+            
+            if(storyExists)
+            {
+                s.execute("DELETE FROM tmpstorytable WHERE storytitle='"+this.internalStory.title+"'");
+                s.execute("DELETE FROM tmpanswers WHERE storytitle='"+this.internalStory.title+"'");
+                s.execute("DELETE FROM tmpresults WHERE storytitle='"+this.internalStory.title+"'");
+                s.execute("DELETE FROM tmprewardss WHERE storytitle='"+this.internalStory.title+"'");
+            }
+            
+            //Now generate SQL statements:
+            System.out.println("Generating SQL...");
+            String statements=internalStory.toSQL("tmpstorytable", "tmpanswers", "tmpresults", "tmprewardss");
+            String strings[]=statements.split("\n");
+            
+            for(String str:strings)
+            {
+                s.execute(str);
+            }
+            
+            s.close();
+            c.close();
+            
+            JOptionPane.showMessageDialog(this, "Successfully saved story to database.", "Message", JOptionPane.OK_OPTION);
+            
+            this.dispose();
+        } catch(ClassNotFoundException e)
+        {
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Got SQLException. Contents: ");
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_exportButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

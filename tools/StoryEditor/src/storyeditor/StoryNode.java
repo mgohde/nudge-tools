@@ -310,16 +310,4 @@ public class StoryNode
         
         return null;
     }
-    
-    /**
-     * Helper function to return SQL statements for a given story node.
-     * @param storyTitle - The storyline's title.
-     * @return SQL statements.
-     */
-    public String toSQL(String storyTitle)
-    {
-        String s="";
-        
-        return s;
-    }
 }

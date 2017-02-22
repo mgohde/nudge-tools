@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
@@ -349,6 +350,11 @@ public class StoryFrame extends javax.swing.JFrame {
         toolsMenu.add(publishItem);
 
         setDefaultsItem.setText("Set defaults...");
+        setDefaultsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setDefaultsItemActionPerformed(evt);
+            }
+        });
         toolsMenu.add(setDefaultsItem);
 
         jMenuBar1.add(toolsMenu);
@@ -465,7 +471,10 @@ public class StoryFrame extends javax.swing.JFrame {
     }
     
     private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
-        JFileChooser jfc=new JFileChooser();
+        JFileChooser jfc=new JFileChooser(settings.loadSaveDir);
+        FileNameExtensionFilter filter=new FileNameExtensionFilter("Story files", "story");
+        jfc.setFileFilter(filter);
+        
         
         int retV=jfc.showOpenDialog(this);
         
@@ -489,7 +498,9 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_openItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
-        JFileChooser jfc=new JFileChooser();
+        JFileChooser jfc=new JFileChooser(settings.loadSaveDir);
+        FileNameExtensionFilter filter=new FileNameExtensionFilter("Story files", "story");
+        jfc.setFileFilter(filter);
         
         int retV=jfc.showSaveDialog(this);
         
@@ -594,7 +605,9 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_sanityTestItemActionPerformed
 
     private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
-        JFileChooser jfc=new JFileChooser();
+        JFileChooser jfc=new JFileChooser(settings.loadSaveDir);
+        FileNameExtensionFilter filter=new FileNameExtensionFilter("XML story description files", "xml");
+        jfc.setFileFilter(filter);
         
         int retV=jfc.showSaveDialog(this);
         
@@ -616,7 +629,9 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_exportMenuItemActionPerformed
 
     private void importMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuItemActionPerformed
-        JFileChooser jfc=new JFileChooser();
+        JFileChooser jfc=new JFileChooser(settings.loadSaveDir);
+        FileNameExtensionFilter filter=new FileNameExtensionFilter("XML story description files", "xml");
+        jfc.setFileFilter(filter);
         
         int retV=jfc.showOpenDialog(this);
         
@@ -674,7 +689,7 @@ public class StoryFrame extends javax.swing.JFrame {
 
     private ServerImportFrame f=null;
     private void serverImportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverImportItemActionPerformed
-        f=new ServerImportFrame();
+        f=new ServerImportFrame(settings);
         
         f.registerImportCallback(new Runnable()
         {
@@ -699,9 +714,28 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_serverImportItemActionPerformed
 
     private void serverExportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverExportItemActionPerformed
-        ServerExportFrame f=new ServerExportFrame(this.internalStory);
-        
+        ServerExportFrame f=new ServerExportFrame(this.internalStory, settings);
     }//GEN-LAST:event_serverExportItemActionPerformed
+
+    private void setDefaultsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setDefaultsItemActionPerformed
+        SettingsFrame f=new SettingsFrame(settings);
+        f.registerOkButtonCallback(new Runnable(){
+            @Override
+            public void run()
+            {
+                System.out.println("Changed settings:");
+                settings.printSettings();
+                
+                try
+                {
+                    settings.saveSettings(new File(settings.settingsFilePath));
+                } catch(IOException e)
+                {
+                    System.err.println("Could not save updated settings to path: "+settings.settingsFilePath);
+                }
+            }
+        });
+    }//GEN-LAST:event_setDefaultsItemActionPerformed
 
     /**
      * @param args the command line arguments

@@ -13,6 +13,8 @@ import javax.swing.WindowConstants;
  */
 public class SettingsFrame extends javax.swing.JFrame {
     private Settings internalSettings;
+    private Runnable okButtonCallback, cancelButtonCallback;
+
     
     /**
      * Creates new form SettingsFrame
@@ -30,7 +32,21 @@ public class SettingsFrame extends javax.swing.JFrame {
         dbNameBox.setText(s.dbName);
         loadSavePathBox.setText(s.loadSaveDir);
         
+        okButtonCallback=null;
+        cancelButtonCallback=null;
+        
         setVisible(true);
+    }
+    
+    
+    public void registerOkButtonCallback(Runnable r)
+    {
+        okButtonCallback=r;
+    }
+    
+    public void registerCancelButtonCallback(Runnable r)
+    {
+        cancelButtonCallback=r;
     }
 
     /**
@@ -215,10 +231,28 @@ public class SettingsFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        // TODO add your handling code here:
+        //Put all of the changed settings back into the object:
+        internalSettings.dbName=dbNameBox.getText();
+        internalSettings.dbPassword=passwordBox.getText();
+        internalSettings.dbUsername=userNameBox.getText();
+        internalSettings.loadSaveDir=loadSavePathBox.getText();
+        internalSettings.dbServer=serverBox.getText();
+        
+        if(okButtonCallback!=null)
+        {
+            okButtonCallback.run();
+        }
+        
+        this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
+    
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        if(cancelButtonCallback!=null)
+        {
+            cancelButtonCallback.run();
+        }
+        
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 

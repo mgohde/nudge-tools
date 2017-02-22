@@ -22,14 +22,21 @@ import javax.swing.JOptionPane;
 public class ServerExportFrame extends javax.swing.JFrame {
 
     private Story internalStory;
+    private Settings settings;
     
     /**
      * Creates new form ServerExportFrame
      */
-    public ServerExportFrame(Story s) {
+    public ServerExportFrame(Story s, Settings st) {
         initComponents();
         
         internalStory=s;
+        settings=st;
+        
+        serverNameBox.setText(st.dbServer);
+        databaseNameBox.setText(st.dbName);
+        userNameBox.setText(st.dbUsername);
+        passwordBox.setText(st.dbPassword);
         
         this.setTitle("Export to server...");
         this.setVisible(true);

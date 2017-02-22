@@ -47,7 +47,7 @@ public class Settings
         while(s.hasNextLine())
         {
             String line=s.nextLine();
-            String lineToks[]=line.split(" \t");
+            String lineToks[]=line.split(" ");
             
             if(lineToks.length!=0)
             {
@@ -62,7 +62,7 @@ public class Settings
                     case "dbserver:":
                         dbServer=lineToks[1];
                         break;
-                    case "dbname":
+                    case "dbname:":
                         dbName=lineToks[1];
                         break;
                     case "loadsavedir:":
@@ -70,6 +70,7 @@ public class Settings
                         break;
                     default:
                         System.err.println("Encountered unknown token when parsing configuration: "+line);
+                        System.err.println("Token: "+lineToks[0]);
                 }
             }
         }
@@ -87,5 +88,15 @@ public class Settings
         
         pw.flush();
         pw.close();
+    }
+    
+    //Moderately redundant debugging function
+    public void printSettings()
+    {
+        System.out.printf("%s: %s\n", "dbusername", dbUsername);
+        System.out.printf("%s: %s\n", "dbpassword", dbPassword);
+        System.out.printf("%s: %s\n", "dbserver", dbServer);
+        System.out.printf("%s: %s\n", "dbname", dbName);
+        System.out.printf("%s: %s\n", "loadsavedir", loadSaveDir);
     }
 }

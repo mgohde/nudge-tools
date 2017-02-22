@@ -24,17 +24,25 @@ import javax.swing.WindowConstants;
 public class ServerImportFrame extends javax.swing.JFrame 
 {
     private Story newStory;
+    Settings settings;
     /**
      * Creates new form ServerImportFrame
      */
-    public ServerImportFrame() {
+    public ServerImportFrame(Settings s) {
         initComponents();
+        settings=s;
         newStory=null;
         
         //Make the import button invisible until the user queries the database for stories.
         importButton.setVisible(false);
         storyNameLabel.setVisible(false);
         storyListBox.setVisible(false);
+        
+        //Set contents of text boxes to values from settings:
+        serverNameBox.setText(settings.dbServer);
+        databaseNameBox.setText(settings.dbName);
+        userNameBox.setText(settings.dbUsername);
+        passwordBox.setText(settings.dbPassword);
         
         this.setTitle("Import storyline from server...");
         this.setVisible(true);

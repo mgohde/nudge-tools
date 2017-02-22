@@ -39,25 +39,25 @@ public class SanityReport
     {
         String s="";
         
-        s+="Can be completed? "+canBeCompleted+"\n";
+        s+="Can be completed? "+(canBeCompleted?"yes":"no")+"\n";
         for(String str:completionStackTrace)
         {
             s+="\t"+str+"\n";
         }
         
-        s+="Are all probabilities correct? "+allProbabilitiesCorrect+"\n";
+        s+="Are all probabilities correct? "+(allProbabilitiesCorrect?"yes":"no")+"\n";
         for(String str:probErrMessages)
         {
             s+="\t"+str+"\n";
         }
         
-        s+="Are there no self-referential nodes? "+noSelfReferentialNodes+"\n";
+        s+="Are there no self-referential nodes? "+(noSelfReferentialNodes?"yes":"no")+"\n";
         for(String str:selfReferentialNodeNames)
         {
             s+="\t"+str+"\n";
         }
         
-        s+="Are there no circular references? "+noCircularReferences+"\n";
+        s+="Are there no circular references? "+(noCircularReferences?"yes":"no")+"\n";
         for(String str:circularReferenceCheckMessages)
         {
             s+="\t"+str+"\n";

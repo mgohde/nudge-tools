@@ -204,5 +204,16 @@ Since this file format is intended to be machine-readable, several strict rules 
 \end{enumerate}
     
 \footnotetext[3]{It is possible for a story containing some of the problems listed in this section to compile and install correctly. However, this behavior may change with future revisions to the story parsing software.}
-    
+
+\section{Table of special nouns}
+\begin{tabular}{l|l|p{2in}}
+Name & Example & Description\\
+\hline \hline
+Title & Title: titlename & Sets the story's title to the specified value.\\ \hline
+Comment & Comment: text & Directs the parser to discard the current line.\\ \hline
+Note & Note: text & Directs the parser to discard the current line.\\ \hline
+Responses & Responses: (response block) & Generates a set of user-selectable responses for the current story node.\\ \hline
+END & END & END is a destination with special significance to the Nudge support toolset and Nudge software. It represents an endpoint for a given storyline.\\ \hline
+\end{tabular}
+
 \end{document}

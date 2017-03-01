@@ -11,20 +11,30 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
  * @author mgohde
  */
-public class ServerImportFrame extends javax.swing.JFrame 
+public class ServerImportFrame extends javax.swing.JFrame implements TreeSelectionListener
 {
+    DefaultMutableTreeNode topLevelNode;
     private Story newStory;
     Settings settings;
+    private ServerNodeInfo lastSelectedNode;
+    
     /**
      * Creates new form ServerImportFrame
      */
@@ -36,7 +46,9 @@ public class ServerImportFrame extends javax.swing.JFrame
         //Make the import button invisible until the user queries the database for stories.
         importButton.setVisible(false);
         storyNameLabel.setVisible(false);
-        storyListBox.setVisible(false);
+        nameLabel.setVisible(false);
+        storySelectionTree.setVisible(false);
+        removeButton.setVisible(false);
         
         //Set contents of text boxes to values from settings:
         serverNameBox.setText(settings.dbServer);
@@ -80,8 +92,11 @@ public class ServerImportFrame extends javax.swing.JFrame
         passwordBox = new javax.swing.JPasswordField();
         queryButton = new javax.swing.JButton();
         importButton = new javax.swing.JButton();
-        storyListBox = new javax.swing.JComboBox();
         storyNameLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        storySelectionTree = new javax.swing.JTree();
+        nameLabel = new javax.swing.JLabel();
+        removeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,14 +130,18 @@ public class ServerImportFrame extends javax.swing.JFrame
             }
         });
 
-        storyListBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        storyListBox.addActionListener(new java.awt.event.ActionListener() {
+        storyNameLabel.setText("Story Name:");
+
+        jScrollPane1.setViewportView(storySelectionTree);
+
+        nameLabel.setText("Select a story.");
+
+        removeButton.setText("Remove...");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                storyListBoxActionPerformed(evt);
+                removeButtonActionPerformed(evt);
             }
         });
-
-        storyNameLabel.setText("Story Name:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,24 +150,33 @@ public class ServerImportFrame extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(queryButton)
-                    .addComponent(storyNameLabel))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(importButton))
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(passwordBox)
-                            .addComponent(databaseNameBox)
-                            .addComponent(userNameBox)
-                            .addComponent(serverNameBox, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(storyListBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(queryButton))
+                        .addGap(50, 50, 50)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
+                                .addComponent(removeButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(importButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(passwordBox)
+                                    .addComponent(databaseNameBox)
+                                    .addComponent(userNameBox)
+                                    .addComponent(serverNameBox)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(storyNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,13 +199,17 @@ public class ServerImportFrame extends javax.swing.JFrame
                     .addComponent(jLabel3)
                     .addComponent(passwordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(storyListBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(storyNameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(queryButton)
-                    .addComponent(importButton))
+                    .addComponent(storyNameLabel)
+                    .addComponent(nameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(importButton)
+                        .addComponent(removeButton))
+                    .addComponent(queryButton))
                 .addContainerGap())
         );
 
@@ -189,6 +221,10 @@ public class ServerImportFrame extends javax.swing.JFrame
         Statement s;
         PreparedStatement p;
         ResultSet r;
+        DefaultMutableTreeNode globalStories, yourStories;
+        
+        globalStories=new DefaultMutableTreeNode("Global Stories");
+        yourStories=new DefaultMutableTreeNode("Your Stories");
         
         ArrayList<String> storyNameList=new ArrayList<>();
         
@@ -202,26 +238,49 @@ public class ServerImportFrame extends javax.swing.JFrame
             c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
             s=c.createStatement();
             
+            topLevelNode=new DefaultMutableTreeNode(this.serverNameBox.getText());
+            topLevelNode.add(globalStories);
+            topLevelNode.add(yourStories);
+            
             //Get all story names:
             r=s.executeQuery("SELECT DISTINCT storytitle FROM storytable");
+            
+            
             
             //The next() method moves us to the next record.
             while(r.next())
             {
-                storyNameList.add(r.getString(1));
+                globalStories.add(new DefaultMutableTreeNode(new ServerNodeInfo(r.getString(1), ServerNodeInfo.GLOBAL_STORY_NODE)));
+                //storyNameList.add(r.getString(1));
+            }
+            
+            r.close();
+            
+            r=s.executeQuery("SELECT DISTINCT storytitle FROM tmpstorytable"); //Todo: add owner field and authentication.
+            
+            while(r.next())
+            {
+                yourStories.add(new DefaultMutableTreeNode(new ServerNodeInfo(r.getString(1), ServerNodeInfo.LOCAL_STORY_NODE)));
             }
             
             r.close();
             s.close();
             c.close();
             
-            String storyNames[]=new String[storyNameList.size()];
-            storyNames=storyNameList.toArray(storyNames);
+            //String storyNames[]=new String[storyNameList.size()];
+            //storyNames=storyNameList.toArray(storyNames);
             
-            storyListBox.setModel(new DefaultComboBoxModel(storyNames));
-            storyListBox.setVisible(true);
+            
+            storySelectionTree.setModel(new DefaultTreeModel(topLevelNode));
+            storySelectionTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            storySelectionTree.addTreeSelectionListener(this);
+            storySelectionTree.setVisible(true);
+            removeButton.setVisible(true);
+            //storyListBox.setModel(new DefaultComboBoxModel(storyNames));
+            //storyListBox.setVisible(true);
             storyNameLabel.setVisible(true);
             importButton.setVisible(true);
+            nameLabel.setVisible(true);
         } catch(ClassNotFoundException e)
         {
             
@@ -233,12 +292,10 @@ public class ServerImportFrame extends javax.swing.JFrame
         
     }//GEN-LAST:event_queryButtonActionPerformed
 
-    private void storyListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_storyListBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_storyListBoxActionPerformed
-
     private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importButtonActionPerformed
-        String storyName=(String) this.storyListBox.getSelectedItem();
+        String storyName=this.lastSelectedNode.storyName;
+        int fetchType=this.lastSelectedNode.storyType;
+        
         Story story=new Story();
         ArrayList<DBNode> nodes=new ArrayList<>();
         ArrayList<DBAnswer> answerNodes=new ArrayList<>();
@@ -258,8 +315,15 @@ public class ServerImportFrame extends javax.swing.JFrame
             c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
             s=c.createStatement();
             
+            String prefix="";
+            
+            if(fetchType==ServerNodeInfo.LOCAL_STORY_NODE)
+            {
+                prefix="tmp";
+            }
+            
             //Get all story names:
-            r=s.executeQuery("SELECT storylinetite,storyline FROM storytable WHERE storytitle='"+storyName+"'");
+            r=s.executeQuery("SELECT storylinetite,storyline FROM "+prefix+"storytable WHERE storytitle='"+storyName+"'");
             
             //The next() method moves us to the next record.
             while(r.next())
@@ -273,7 +337,7 @@ public class ServerImportFrame extends javax.swing.JFrame
             
             //Now fill out the answers list:
             r.close();
-            r=s.executeQuery("SELECT storylinetite,answer,answerchoice FROM answers WHERE storytitle='"+storyName+"'");
+            r=s.executeQuery("SELECT storylinetite,answer,answerchoice FROM "+prefix+"answers WHERE storytitle='"+storyName+"'");
             
             while(r.next())
             {
@@ -289,8 +353,8 @@ public class ServerImportFrame extends javax.swing.JFrame
             {
                 r.close();
                 
-                r=s.executeQuery("SELECT startprob,stopprob,gotostorylinetite FROM results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
-                System.out.println("Running query: "+"SELECT startprob,stopprob,gotostorylinetite FROM results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
+                r=s.executeQuery("SELECT startprob,stopprob,gotostorylinetite FROM "+prefix+"results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
+                System.out.println("Running query: "+"SELECT startprob,stopprob,gotostorylinetite FROM "+prefix+"results WHERE storytitle='"+storyName+"' AND storylinetite='"+a.ownerName+"' AND answer='"+a.answer+"'");
                 
                 while(r.next())
                 {
@@ -378,6 +442,78 @@ public class ServerImportFrame extends javax.swing.JFrame
         }
     }//GEN-LAST:event_importButtonActionPerformed
 
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        Connection c;
+        Statement s;
+        String selectedStoryName;
+
+        //First, prevent the user from deleting a story that isn't theirs:
+        if(lastSelectedNode.storyType!=ServerNodeInfo.LOCAL_STORY_NODE)
+        {
+            JOptionPane.showMessageDialog(this, "Error: You cannot delete a storyline that does not belong to you.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
+        int retV=JOptionPane.showConfirmDialog(this, "Are you sure you would like to delete the selected story?", "Question", JOptionPane.YES_NO_OPTION);
+        
+        if(retV==JOptionPane.YES_OPTION)
+        {
+            try
+            {
+                Class.forName("com.mysql.jdbc.Driver");
+                System.out.println("Attempting to query URL:");
+                System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
+                //System.out.println(this.userNameBox.getText());
+                //System.out.println(this.passwordBox.getText());
+                c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.userNameBox.getText(), this.passwordBox.getText());
+                s=c.createStatement();
+
+                selectedStoryName=lastSelectedNode.storyName;
+                s.execute("DELETE FROM tmpstorytable WHERE storytitle='"+selectedStoryName+"'");
+                s.execute("DELETE FROM tmpanswers WHERE storytitle='"+selectedStoryName+"'");
+                s.execute("DELETE FROM tmpresults WHERE storytitle='"+selectedStoryName+"'");
+                s.execute("DELETE FROM tmprewardss WHERE storytitle='"+selectedStoryName+"'");
+                
+                s.close();
+                c.close();
+                
+                Enumeration en=topLevelNode.children();
+                
+                while(en.hasMoreElements())
+                {
+                    DefaultMutableTreeNode nextN=(DefaultMutableTreeNode) en.nextElement();
+                    
+                    //nextN should contain a set of all useful nodes:
+                    Enumeration subEn=nextN.children();
+                    DefaultMutableTreeNode nextNextN;
+                    
+                    while(subEn.hasMoreElements())
+                    {
+                        nextNextN=(DefaultMutableTreeNode) subEn.nextElement();
+                        
+                        ServerNodeInfo sni=(ServerNodeInfo) nextNextN.getUserObject();
+                        
+                        if(sni.storyName.equals(lastSelectedNode.storyName))
+                        {
+                            nextN.remove(nextNextN);
+                            break;
+                        }
+                    }
+                }
+                
+                storySelectionTree.setModel(new DefaultTreeModel(topLevelNode));
+            } catch(ClassNotFoundException e)
+            {
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
+                System.err.println("Got SQLException. Contents: ");
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_removeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField databaseNameBox;
     private javax.swing.JButton importButton;
@@ -385,11 +521,27 @@ public class ServerImportFrame extends javax.swing.JFrame
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JPasswordField passwordBox;
     private javax.swing.JButton queryButton;
+    private javax.swing.JButton removeButton;
     private javax.swing.JTextField serverNameBox;
-    private javax.swing.JComboBox storyListBox;
     private javax.swing.JLabel storyNameLabel;
+    private javax.swing.JTree storySelectionTree;
     private javax.swing.JTextField userNameBox;
     // End of variables declaration//GEN-END:variables
+
+    //For tree selection:
+    @Override
+    public void valueChanged(TreeSelectionEvent tse) 
+    {
+        DefaultMutableTreeNode selectedNode=(DefaultMutableTreeNode) storySelectionTree.getLastSelectedPathComponent();
+        
+        if(selectedNode!=null)
+        {
+            this.lastSelectedNode=(ServerNodeInfo) selectedNode.getUserObject();
+            nameLabel.setText(this.lastSelectedNode.storyName);
+        }
+    }
 }

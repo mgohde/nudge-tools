@@ -192,6 +192,7 @@ public class ServerExportFrame extends javax.swing.JFrame {
             //Now generate SQL statements:
             System.out.println("Generating SQL...");
             String statements=internalStory.toSQL("tmpstorytable", "tmpanswers", "tmpresults", "tmprewardss");
+            System.out.println(statements);
             String strings[]=statements.split("\n");
             
             for(String str:strings)
@@ -202,7 +203,7 @@ public class ServerExportFrame extends javax.swing.JFrame {
             s.close();
             c.close();
             
-            JOptionPane.showMessageDialog(this, "Successfully saved story to database.", "Message", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(this, "Successfully saved story to database.", "Message", JOptionPane.INFORMATION_MESSAGE);
             
             this.dispose();
         } catch(ClassNotFoundException e)

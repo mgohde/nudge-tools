@@ -234,6 +234,25 @@ public class StoryNode
                 StoryNode p=parents.get(i);
                 g.drawLine(img.getWidth()/2, img.getHeight()/2, destColIdx, (heightPerDest*i+15));
                 g.drawString(p.name, destColIdx, (heightPerDest*i+15));
+                
+                int destWeight=0;
+                
+                //Get the weight that this node had in its parent:
+                for(Response r:p.respList)
+                {
+                    for(int j=0;j<r.destNames.size();j++)
+                    {
+                        if(r.destNames.get(j).equals(this.name))
+                        {
+                            destWeight=r.destWeights.get(j);
+                        }
+                    }
+                }
+                
+                //Render the weight of the child from the parent.
+                int x=img.getWidth()/3;
+                int y=heightPerDest/2*(i)+80;
+                g.drawString(""+destWeight, x, y);
             }
         }
     }

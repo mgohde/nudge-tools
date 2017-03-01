@@ -204,6 +204,7 @@ public class StoryFrame extends javax.swing.JFrame {
         sanityTestItem = new javax.swing.JMenuItem();
         publishItem = new javax.swing.JMenuItem();
         setDefaultsItem = new javax.swing.JMenuItem();
+        createAccountItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutItem = new javax.swing.JMenuItem();
 
@@ -356,6 +357,14 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
         toolsMenu.add(setDefaultsItem);
+
+        createAccountItem.setText("Create account on database server...");
+        createAccountItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createAccountItemActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(createAccountItem);
 
         jMenuBar1.add(toolsMenu);
 
@@ -701,6 +710,14 @@ public class StoryFrame extends javax.swing.JFrame {
                     if(s!=null)
                     {
                         internalStory=s;
+                        lastSelectedStoryNode=null;
+                        lastSelectedStoryNodeIndex=0;
+                        nodeNameList.removeAll();
+                        nodeNameListModel.clear();
+                        nodeNameList.updateUI();
+                        codeBox.setText("");
+                        p.setImg(new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB));
+                        p.updateUI();
                         updateFields();
                     }
                     
@@ -736,6 +753,10 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_setDefaultsItemActionPerformed
+
+    private void createAccountItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createAccountItemActionPerformed
+        RegistrationForm f=new RegistrationForm(settings);
+    }//GEN-LAST:event_createAccountItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -775,6 +796,7 @@ public class StoryFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
     private javax.swing.JTextArea codeBox;
+    private javax.swing.JMenuItem createAccountItem;
     private javax.swing.JToggleButton deleteButton;
     private javax.swing.JPanel drawingPane;
     private javax.swing.JMenu editMenu;

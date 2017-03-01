@@ -5,6 +5,8 @@
  */
 package storyeditor;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -38,6 +40,26 @@ public class SettingsFrame extends javax.swing.JFrame {
         setVisible(true);
     }
     
+    /**
+     * Used to determine if a confirmation dialog should be shown on cancel.
+     * @return 
+     */
+    private boolean fieldsDiffer()
+    {
+        boolean fieldsSame;
+        
+        //Nasty boolean mess incoming;
+        fieldsSame=true;
+        fieldsSame=fieldsSame&&(internalSettings.dbName.equals(dbNameBox.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.dbPassword.equals(passwordBox.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.dbServer.equals(serverBox.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.loadSaveDir.equals(loadSavePathBox.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.dbUsername.equals(userNameBox.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.settingsFilePath.equals(settingsFilePath.getText()));
+        
+        return !fieldsSame;
+    }
+    
     
     public void registerOkButtonCallback(Runnable r)
     {
@@ -48,6 +70,8 @@ public class SettingsFrame extends javax.swing.JFrame {
     {
         cancelButtonCallback=r;
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -71,10 +95,10 @@ public class SettingsFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         settingsFilePath = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        settingsFileUpdateButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         loadSavePathBox = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        loadSavePathUpdateButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -143,13 +167,23 @@ public class SettingsFrame extends javax.swing.JFrame {
 
         settingsFilePath.setText("/whatever/to/path/yeah");
 
-        jButton3.setText("Update...");
+        settingsFileUpdateButton.setText("Update...");
+        settingsFileUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                settingsFileUpdateButtonActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Open/Save file location:");
 
         loadSavePathBox.setText("/path/to/your/home/dir");
 
-        jButton1.setText("Update...");
+        loadSavePathUpdateButton.setText("Update...");
+        loadSavePathUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadSavePathUpdateButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -165,11 +199,11 @@ public class SettingsFrame extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(settingsFilePath)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3))
+                        .addComponent(settingsFileUpdateButton))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(loadSavePathBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(loadSavePathUpdateButton)))
                 .addContainerGap(134, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -179,12 +213,12 @@ public class SettingsFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(settingsFilePath)
-                    .addComponent(jButton3))
+                    .addComponent(settingsFileUpdateButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(loadSavePathBox)
-                    .addComponent(jButton1))
+                    .addComponent(loadSavePathUpdateButton))
                 .addContainerGap(105, Short.MAX_VALUE))
         );
 
@@ -248,6 +282,17 @@ public class SettingsFrame extends javax.swing.JFrame {
 
     
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        if(fieldsDiffer())
+        {
+            //At least one field has changed. Determine if the user is sure:
+            int val=JOptionPane.showConfirmDialog(this, "At least one field has been changed. Discard changes?", "Discard changes?", JOptionPane.YES_NO_OPTION);
+            
+            if(val==JOptionPane.NO_OPTION)
+            {
+                return;
+            }
+        }
+        
         if(cancelButtonCallback!=null)
         {
             cancelButtonCallback.run();
@@ -256,11 +301,25 @@ public class SettingsFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void settingsFileUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsFileUpdateButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_settingsFileUpdateButtonActionPerformed
+
+    private void loadSavePathUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSavePathUpdateButtonActionPerformed
+        //Allow the user to choose a directory with a jfilechooser:
+        JFileChooser jfc=new JFileChooser(internalSettings.loadSaveDir);
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setAcceptAllFileFilterUsed(false);
+        
+        if(jfc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION)
+        {
+            this.loadSavePathBox.setText(jfc.getSelectedFile().toString());
+        }
+    }//GEN-LAST:event_loadSavePathUpdateButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextField dbNameBox;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -270,10 +329,12 @@ public class SettingsFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel loadSavePathBox;
+    private javax.swing.JButton loadSavePathUpdateButton;
     private javax.swing.JButton okButton;
     private javax.swing.JPasswordField passwordBox;
     private javax.swing.JTextField serverBox;
     private javax.swing.JLabel settingsFilePath;
+    private javax.swing.JButton settingsFileUpdateButton;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField userNameBox;
     // End of variables declaration//GEN-END:variables

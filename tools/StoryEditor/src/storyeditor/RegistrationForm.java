@@ -5,6 +5,14 @@
  */
 package storyeditor;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -13,6 +21,7 @@ import javax.swing.WindowConstants;
  */
 public class RegistrationForm extends javax.swing.JFrame {
     private Settings settings;
+    private boolean nameAvailable;
     
     /**
      * Creates new form RegistrationForm
@@ -22,6 +31,13 @@ public class RegistrationForm extends javax.swing.JFrame {
         
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         settings=s;
+        
+        databaseUsernameBox.setText(s.dbUsername);
+        databasePasswordBox.setText(s.dbPassword);
+        databaseNameBox.setText(s.dbName);
+        serverNameBox.setText(s.dbServer);
+        
+        this.setVisible(true);
     }
 
     /**
@@ -43,6 +59,11 @@ public class RegistrationForm extends javax.swing.JFrame {
         databaseNameBox = new javax.swing.JTextField();
         databaseUsernameBox = new javax.swing.JTextField();
         databasePasswordBox = new javax.swing.JPasswordField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        availabilityButton = new javax.swing.JButton();
+        userUsernameBox = new javax.swing.JTextField();
+        userPasswordBox = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,6 +85,21 @@ public class RegistrationForm extends javax.swing.JFrame {
 
         databasePasswordBox.setText("password");
 
+        jLabel6.setText("Requested Username:");
+
+        jLabel7.setText("Requested Password:");
+
+        availabilityButton.setText("Check availability...");
+        availabilityButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                availabilityButtonActionPerformed(evt);
+            }
+        });
+
+        userUsernameBox.setText("someperson");
+
+        userPasswordBox.setText("somepassword");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,12 +119,23 @@ public class RegistrationForm extends javax.swing.JFrame {
                             .addComponent(databaseUsernameBox)
                             .addComponent(serverNameBox, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(databasePasswordBox))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(availabilityButton))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(databasePasswordBox)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(userPasswordBox)
+                            .addComponent(userUsernameBox))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,14 +161,38 @@ public class RegistrationForm extends javax.swing.JFrame {
                     .addComponent(databasePasswordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(userUsernameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(userPasswordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(availabilityButton)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void availabilityButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_availabilityButtonActionPerformed
+        if(nameAvailable)
+        {
+            registerUser();
+        }
+        
+        else
+        {
+            checkAvailability();
+        }
+    }//GEN-LAST:event_availabilityButtonActionPerformed
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton availabilityButton;
     private javax.swing.JTextField databaseNameBox;
     private javax.swing.JPasswordField databasePasswordBox;
     private javax.swing.JTextField databaseUsernameBox;
@@ -130,7 +201,102 @@ public class RegistrationForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField serverNameBox;
+    private javax.swing.JPasswordField userPasswordBox;
+    private javax.swing.JTextField userUsernameBox;
     // End of variables declaration//GEN-END:variables
+    
+    public void registerUser()
+    {
+        Connection c;
+        Statement s;
+        
+        ArrayList<String> storyNameList=new ArrayList<>();
+        
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Attempting to query URL:");
+            System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
+            //System.out.println(this.userNameBox.getText());
+            //System.out.println(this.passwordBox.getText());
+            
+            c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.databaseUsernameBox.getText(), this.databasePasswordBox.getText());
+            s=c.createStatement();
+            
+            //Determine if the given storyline already exists on the server:
+            String username=userUsernameBox.getText();
+            String password=userPasswordBox.getText();
+            s.execute("INSERT INTO contributors (username, password) VALUES ('"+username+"', PASSWORD('"+password+"'))");
+            
+            s.close();
+            c.close();
+            
+            JOptionPane.showMessageDialog(this, "Registration successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
+            
+            this.dispose();
+        } catch(ClassNotFoundException e)
+        {
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Got SQLException. Contents: ");
+            ex.printStackTrace();
+        }
+    }
+    
+    public void checkAvailability()
+    {
+        Connection c;
+        Statement s;
+        ResultSet r;
+        
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Attempting to query URL:");
+            System.out.println("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText());
+            //System.out.println(this.userNameBox.getText());
+            //System.out.println(this.passwordBox.getText());
+            
+            c=DriverManager.getConnection("jdbc:mysql://"+this.serverNameBox.getText()+"/"+this.databaseNameBox.getText(), this.databaseUsernameBox.getText(), this.databasePasswordBox.getText());
+            s=c.createStatement();
+            
+            //Determine if the given storyline already exists on the server:
+            boolean storyExists=false;
+            r=s.executeQuery("SELECT userid FROM contributors WHERE username='"+this.userUsernameBox+"'");
+            
+            boolean userExists=false;
+            
+            while(r.next())
+            {
+                userExists=true;
+            }
+            
+            r.close();
+            s.close();
+            c.close();
+            
+            if(userExists)
+            {
+                JOptionPane.showMessageDialog(this, "Username already taken.", "Message", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            else
+            {
+                this.availabilityButton.setText("Register...");
+                this.nameAvailable=true;
+            }
+        } catch(ClassNotFoundException e)
+        {
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Could not connect to specified MySQL server instance!", "Could not connect", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Got SQLException. Contents: ");
+            ex.printStackTrace();
+        }
+    }
 }

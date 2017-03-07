@@ -15,12 +15,19 @@ import java.util.Scanner;
  */
 public class Settings 
 {
+    //General database access information:
     public String dbUsername;
     public String dbPassword;
     public String dbServer;
     public String dbName;
+    
+    //Local state information.
     public String settingsFilePath;
     public String loadSaveDir;
+    
+    //Database export credentials:
+    public String userName;
+    public String password;
     
     
     public Settings()
@@ -31,6 +38,8 @@ public class Settings
         dbName="nudge";
         settingsFilePath=System.getProperty("user.home")+"/.storyeditor.conf";
         loadSaveDir=System.getProperty("user.home");
+        userName="someuser";
+        password="password";
     }
     
     public boolean settingsFileExists()
@@ -68,6 +77,12 @@ public class Settings
                     case "loadsavedir:":
                         loadSaveDir=lineToks[1];
                         break;
+                    case "username:":
+                        userName=lineToks[1];
+                        break;
+                    case "password:":
+                        password=lineToks[1];
+                        break;
                     default:
                         System.err.println("Encountered unknown token when parsing configuration: "+line);
                         System.err.println("Token: "+lineToks[0]);
@@ -76,27 +91,33 @@ public class Settings
         }
     }
     
-    public void saveSettings(File f) throws FileNotFoundException
+    private void genSettingsDump(PrintWriter pw)
     {
-        PrintWriter pw=new PrintWriter(f);
-        
         pw.printf("%s: %s\n", "dbusername", dbUsername);
         pw.printf("%s: %s\n", "dbpassword", dbPassword);
         pw.printf("%s: %s\n", "dbserver", dbServer);
         pw.printf("%s: %s\n", "dbname", dbName);
         pw.printf("%s: %s\n", "loadsavedir", loadSaveDir);
         
+        pw.printf("%s: %s\n", "username", userName);
+        pw.printf("%s: %s\n", "password", password);
+        
         pw.flush();
+    }
+    
+    public void saveSettings(File f) throws FileNotFoundException
+    {
+        PrintWriter pw=new PrintWriter(f);
+        
+        genSettingsDump(pw);
         pw.close();
     }
     
     //Moderately redundant debugging function
     public void printSettings()
     {
-        System.out.printf("%s: %s\n", "dbusername", dbUsername);
-        System.out.printf("%s: %s\n", "dbpassword", dbPassword);
-        System.out.printf("%s: %s\n", "dbserver", dbServer);
-        System.out.printf("%s: %s\n", "dbname", dbName);
-        System.out.printf("%s: %s\n", "loadsavedir", loadSaveDir);
+        PrintWriter pw=new PrintWriter(System.out);
+        genSettingsDump(pw);
+        pw.close();
     }
 }

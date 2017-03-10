@@ -22,6 +22,7 @@ import javax.swing.WindowConstants;
 public class RegistrationForm extends javax.swing.JFrame {
     private Settings settings;
     private boolean nameAvailable;
+    private Runnable registrationCallback;
     
     /**
      * Creates new form RegistrationForm
@@ -37,7 +38,14 @@ public class RegistrationForm extends javax.swing.JFrame {
         databaseNameBox.setText(s.dbName);
         serverNameBox.setText(s.dbServer);
         
+        registrationCallback=null;
+        
         this.setVisible(true);
+    }
+    
+    public void setRegistrationCallback(Runnable newCallback)
+    {
+        registrationCallback=newCallback;
     }
 
     /**
@@ -236,6 +244,14 @@ public class RegistrationForm extends javax.swing.JFrame {
             c.close();
             
             JOptionPane.showMessageDialog(this, "Registration successful!", "Message", JOptionPane.INFORMATION_MESSAGE);
+            
+            settings.userName=username;
+            settings.password=password;
+            
+            if(registrationCallback!=null)
+            {
+                registrationCallback.run();
+            }
             
             this.dispose();
         } catch(ClassNotFoundException e)

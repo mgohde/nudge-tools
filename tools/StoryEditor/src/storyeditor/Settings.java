@@ -120,4 +120,10 @@ public class Settings
         genSettingsDump(pw);
         pw.close();
     }
+    
+    //This is such a commonly used task that it makes sense to make a method for it.
+    public File getSettingsFile()
+    {
+        return new File(this.settingsFilePath);
+    }
 }

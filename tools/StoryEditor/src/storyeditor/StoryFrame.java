@@ -6,6 +6,7 @@
 package storyeditor;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -76,6 +77,8 @@ public class StoryFrame extends javax.swing.JFrame {
             }
             
         }
+        
+        this.codeBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
         lastSelectedStoryNode=null;
@@ -119,6 +122,8 @@ public class StoryFrame extends javax.swing.JFrame {
                 }
             }
         });
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownRunnable(settings)));
     }
     
     private void dispatchNodeNameEvent(ListSelectionEvent lse)
@@ -756,6 +761,18 @@ public class StoryFrame extends javax.swing.JFrame {
 
     private void createAccountItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createAccountItemActionPerformed
         RegistrationForm f=new RegistrationForm(settings);
+        f.setRegistrationCallback(new Runnable(){
+            public void run()
+            {
+                try
+                {
+                    settings.saveSettings(settings.getSettingsFile());
+                } catch(IOException e)
+                {
+                    System.err.println("Error: could not save settings to "+settings.settingsFilePath);
+                }
+            }
+        });
     }//GEN-LAST:event_createAccountItemActionPerformed
 
     /**

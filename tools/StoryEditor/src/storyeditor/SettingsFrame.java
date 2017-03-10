@@ -99,6 +99,10 @@ public class SettingsFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         loadSavePathBox = new javax.swing.JLabel();
         loadSavePathUpdateButton = new javax.swing.JButton();
+        storyUsername = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        storyPassword = new javax.swing.JPasswordField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -185,6 +189,14 @@ public class SettingsFrame extends javax.swing.JFrame {
             }
         });
 
+        storyUsername.setText("someuser");
+
+        jLabel7.setText("Story storage username:");
+
+        jLabel8.setText("Story storage password:");
+
+        storyPassword.setText("jPasswordField1");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -193,18 +205,24 @@ public class SettingsFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8))
                 .addGap(36, 36, 36)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(settingsFilePath)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(settingsFileUpdateButton))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(loadSavePathBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loadSavePathUpdateButton)))
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(settingsFilePath)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(settingsFileUpdateButton))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(loadSavePathBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(loadSavePathUpdateButton)))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(storyPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                        .addComponent(storyUsername, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addContainerGap(124, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -219,7 +237,15 @@ public class SettingsFrame extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(loadSavePathBox)
                     .addComponent(loadSavePathUpdateButton))
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(storyUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(storyPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("General Settings", jPanel2);
@@ -271,6 +297,9 @@ public class SettingsFrame extends javax.swing.JFrame {
         internalSettings.dbUsername=userNameBox.getText();
         internalSettings.loadSaveDir=loadSavePathBox.getText();
         internalSettings.dbServer=serverBox.getText();
+        
+        internalSettings.userName=storyUsername.getText();
+        internalSettings.password=storyPassword.getText();
         
         if(okButtonCallback!=null)
         {
@@ -326,6 +355,8 @@ public class SettingsFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel loadSavePathBox;
@@ -335,6 +366,8 @@ public class SettingsFrame extends javax.swing.JFrame {
     private javax.swing.JTextField serverBox;
     private javax.swing.JLabel settingsFilePath;
     private javax.swing.JButton settingsFileUpdateButton;
+    private javax.swing.JPasswordField storyPassword;
+    private javax.swing.JTextField storyUsername;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField userNameBox;
     // End of variables declaration//GEN-END:variables

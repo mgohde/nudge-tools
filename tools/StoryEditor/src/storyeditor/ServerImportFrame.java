@@ -221,10 +221,11 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
         Statement s;
         PreparedStatement p;
         ResultSet r;
-        DefaultMutableTreeNode globalStories, yourStories;
+        DefaultMutableTreeNode globalStories, yourStories, otherStories;
         
         globalStories=new DefaultMutableTreeNode("Global Stories");
         yourStories=new DefaultMutableTreeNode("Your Stories");
+        otherStories=new DefaultMutableTreeNode("Other Users' Stories");
         
         ArrayList<String> storyNameList=new ArrayList<>();
         
@@ -241,6 +242,7 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
             topLevelNode=new DefaultMutableTreeNode(this.serverNameBox.getText());
             topLevelNode.add(globalStories);
             topLevelNode.add(yourStories);
+            topLevelNode.add(otherStories);
             
             //Get all story names:
             r=s.executeQuery("SELECT DISTINCT storytitle FROM storytable");
@@ -256,11 +258,19 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
             
             r.close();
             
-            r=s.executeQuery("SELECT DISTINCT storytitle FROM tmpstorytable"); //Todo: add owner field and authentication.
-            
+            System.out.println(settings.userName);
+            r=s.executeQuery("SELECT DISTINCT storytitle FROM tmpstorytable WHERE creator=(SELECT userid FROM contributors WHERE username='"+settings.userName+"')"); //Todo: add owner field and authentication.
+
             while(r.next())
             {
                 yourStories.add(new DefaultMutableTreeNode(new ServerNodeInfo(r.getString(1), ServerNodeInfo.LOCAL_STORY_NODE)));
+            }
+            
+            r=s.executeQuery("SELECT DISTINCT storytitle FROM tmpstorytable WHERE creator<>(SELECT userid FROM contributors WHERE username='"+settings.userName+"')"); //Todo: add owner field and authentication.
+
+            while(r.next())
+            {
+                otherStories.add(new DefaultMutableTreeNode(new ServerNodeInfo(r.getString(1), ServerNodeInfo.LOCAL_STORY_NODE)));
             }
             
             r.close();

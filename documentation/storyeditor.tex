@@ -19,7 +19,6 @@ This tool should make it fairly straightforward to edit stories, convert between
 This document will detail the Story Editor, its features, and its usage in a production environment.
 
 \section{The Editor Window}
-% TODO: Insert a picture here.
 
 When it is first started, the Story Editor will create a blank story and display a window similar to what is depicted above. 
 This window has a series of controls intended to allow a user to quickly engage in common tasks, such as adding new story nodes, setting the story title, and updating the contents of a given story node.
@@ -93,6 +92,7 @@ The Tools menu contains a set of items related to changing global application se
     Sanity test & Runs a series of tests on the current storyline to determine if it is complete and sufficiently free of errors.\\ \hline
     Publish... & Exports the story to be installed in a production Nudge server.\\ \hline
     Set defaults... & Allows the user to specify various default values for save location, database server credentials, etc.\\ \hline
+    Create account on database server... & Creates a user account so that stories can be imported from or saved to a nudge server for easy editing elsewhere.\\ \hline
     \end{tabular}
 \end{center}
 
@@ -210,5 +210,46 @@ INSERT INTO tmpstorytable VALUES (5,'Example Story','end','You have reached the 
 INSERT INTO tmpanswers VALUES ('Example Story','end','A','end');
 INSERT INTO tmpresults VALUES (7,'Example Story','end','A',0,100,'END');
 \end{lstlisting}
+
+\section{Remote story editing and storage}
+
+One important possibility that the story editor enables is that of storing storylines on 
+the a remote server so that can be more readily merged into Nudge's database. This approach
+should also enable users to more easily manage and collaborate on their storylines from multiple
+machines.
+
+\subsection{Registering for a Collaborator ID}
+In order to import or export storylines to a server, it is necessary to obtain two sets of credentials:
+    
+\begin{enumerate}
+\item A database server login
+\item A collaborator login
+\end{enumerate}
+
+The database server login allows a user to read and write from the Nudge database itself, while the collaborator login identifies storyline ownership and other key information.
+
+In order to obtain a collaborator login, it is necessary to register with the database server. Registration is done
+through the ``Create account on database server...'' item in the ``Tools'' menu. 
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[scale=1]{registrationwindow.png}
+    \end{center}
+    \caption{Elements of the editor window}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[scale=1]{importwindow.png}
+    \end{center}
+    \caption{Elements of the editor window}
+\end{figure}
+
+\section{Story merge support}
+
+While not yet implemented, one important future direction for development is that of enabling
+users to merge storylines together. While seemingly limited in usefulness, storyline merger
+support will enable multiple users to collaboratively edit a sotryline. This, if used correctly, has
+the potential to significantly reduce the time needed to write a storyline.
 
 \end{document}

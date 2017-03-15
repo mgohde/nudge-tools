@@ -29,6 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AbstractDocument;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
@@ -38,7 +39,7 @@ import org.xml.sax.SAXException;
  */
 public class StoryFrame extends javax.swing.JFrame {
     Settings settings;
-    
+    EditorFilter ed;
     StoryNode lastSelectedStoryNode;
     ArrayList<StoryNode> rawNodeList;
     int lastSelectedStoryNodeIndex;
@@ -79,6 +80,20 @@ public class StoryFrame extends javax.swing.JFrame {
         }
         
         this.codeBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        /*
+        ed=new EditorFilter(this.codeBox.getStyledDocument());
+        
+        if(this.codeBox.getStyledDocument() instanceof AbstractDocument)
+        {
+            AbstractDocument a=(AbstractDocument) this.codeBox.getStyledDocument();
+            a.setDocumentFilter(ed);
+        }
+        
+        else
+        {
+            System.err.println("codeBox does not contain AbstractDocument. Cannot do code highlighting.");
+        } */
+        
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
         lastSelectedStoryNode=null;
@@ -94,7 +109,7 @@ public class StoryFrame extends javax.swing.JFrame {
                     
         });
         
-        codeBox.setTabSize(4);
+        //codeBox.setTabSize(4);
         
         p=new DrawPanel();
         p.setMinimumSize(new Dimension(100, 100));
@@ -158,6 +173,15 @@ public class StoryFrame extends javax.swing.JFrame {
             n=this.internalStory.nodeList.get(idx);
             System.out.println("Selected story node "+n.name);
             codeBox.setText(n.toString());
+            /*
+            if(codeBox.getStyledDocument() instanceof AbstractDocument)
+            {
+                AbstractDocument a=(AbstractDocument) codeBox.getStyledDocument();
+                ed=new EditorFilter(codeBox.getStyledDocument());
+                
+                a.setDocumentFilter(ed);
+            }*/
+            
             this.lastSelectedStoryNode=n;
             this.lastSelectedStoryNodeIndex=idx;
         }
@@ -185,7 +209,7 @@ public class StoryFrame extends javax.swing.JFrame {
         nodeNameList = new javax.swing.JList();
         updateButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        codeBox = new javax.swing.JTextArea();
+        codeBox = new javax.swing.JTextPane();
         jLabel2 = new javax.swing.JLabel();
         deleteButton = new javax.swing.JToggleButton();
         newItemButton = new javax.swing.JButton();
@@ -230,8 +254,6 @@ public class StoryFrame extends javax.swing.JFrame {
             }
         });
 
-        codeBox.setColumns(20);
-        codeBox.setRows(5);
         jScrollPane4.setViewportView(codeBox);
 
         jLabel2.setText("Node");
@@ -812,7 +834,7 @@ public class StoryFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
-    private javax.swing.JTextArea codeBox;
+    private javax.swing.JTextPane codeBox;
     private javax.swing.JMenuItem createAccountItem;
     private javax.swing.JToggleButton deleteButton;
     private javax.swing.JPanel drawingPane;

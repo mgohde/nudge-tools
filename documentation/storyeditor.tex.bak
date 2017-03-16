@@ -235,7 +235,7 @@ To register:
     
 \begin{enumerate}
 \item Open the ``Create account on database server'' dialog
-\item Ensure that the database login credentials presented are correct.
+\item Ensure tha tthe database login credentials presented are correct.
 \item Enter a desired set of collaborator credentials.
 \item Click the ``Check Availability...'' button.
 \item If the ``Check Availability...'' button now reads, ``Register...'', then click it and complete the process. Otherwise, change the desired username until it can be registered.

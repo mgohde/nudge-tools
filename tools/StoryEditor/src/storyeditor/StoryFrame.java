@@ -30,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
@@ -80,19 +81,20 @@ public class StoryFrame extends javax.swing.JFrame {
         }
         
         this.codeBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        /*
-        ed=new EditorFilter(this.codeBox.getStyledDocument());
+        
+        ed=new EditorFilter(this.codeBox.getStyledDocument(), this.codeBox);
         
         if(this.codeBox.getStyledDocument() instanceof AbstractDocument)
         {
             AbstractDocument a=(AbstractDocument) this.codeBox.getStyledDocument();
             a.setDocumentFilter(ed);
+            
         }
         
         else
         {
             System.err.println("codeBox does not contain AbstractDocument. Cannot do code highlighting.");
-        } */
+        } 
         
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
@@ -173,14 +175,23 @@ public class StoryFrame extends javax.swing.JFrame {
             n=this.internalStory.nodeList.get(idx);
             System.out.println("Selected story node "+n.name);
             codeBox.setText(n.toString());
-            /*
+            
             if(codeBox.getStyledDocument() instanceof AbstractDocument)
             {
                 AbstractDocument a=(AbstractDocument) codeBox.getStyledDocument();
-                ed=new EditorFilter(codeBox.getStyledDocument());
+                try
+                {
+                    a.remove(0, a.getLength()-1);
+                } catch(BadLocationException e)
+                {
+                    e.printStackTrace();
+                    System.err.println("Got a BadLocationException when attempting to clear all data from an abstract document.");
+                }
+                
+                ed=new EditorFilter(codeBox.getStyledDocument(), codeBox);
                 
                 a.setDocumentFilter(ed);
-            }*/
+            }
             
             this.lastSelectedStoryNode=n;
             this.lastSelectedStoryNodeIndex=idx;

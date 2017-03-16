@@ -55,6 +55,7 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
         databaseNameBox.setText(settings.dbName);
         userNameBox.setText(settings.dbUsername);
         passwordBox.setText(settings.dbPassword);
+        contributorNameBox.setText(settings.userName);
         
         this.setTitle("Import storyline from server...");
         this.setVisible(true);
@@ -97,6 +98,8 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
         storySelectionTree = new javax.swing.JTree();
         nameLabel = new javax.swing.JLabel();
         removeButton = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        contributorNameBox = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -143,6 +146,10 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
             }
         });
 
+        jLabel5.setText("Contributor ID:");
+
+        contributorNameBox.setText("jLabel6");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,14 +175,20 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(contributorNameBox)
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(passwordBox)
                                     .addComponent(databaseNameBox)
                                     .addComponent(userNameBox)
                                     .addComponent(serverNameBox)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(storyNameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameLabel)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(storyNameLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(nameLabel))
+                            .addComponent(jLabel5))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -199,7 +212,11 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
                     .addComponent(jLabel3)
                     .addComponent(passwordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(contributorNameBox))
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(storyNameLabel)
@@ -525,12 +542,14 @@ public class ServerImportFrame extends javax.swing.JFrame implements TreeSelecti
     }//GEN-LAST:event_removeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel contributorNameBox;
     private javax.swing.JTextField databaseNameBox;
     private javax.swing.JButton importButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JPasswordField passwordBox;

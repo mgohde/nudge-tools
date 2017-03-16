@@ -34,6 +34,9 @@ public class SettingsFrame extends javax.swing.JFrame {
         dbNameBox.setText(s.dbName);
         loadSavePathBox.setText(s.loadSaveDir);
         
+        storyUsername.setText(s.userName);
+        storyPassword.setText(s.password);
+        
         okButtonCallback=null;
         cancelButtonCallback=null;
         
@@ -56,6 +59,9 @@ public class SettingsFrame extends javax.swing.JFrame {
         fieldsSame=fieldsSame&&(internalSettings.loadSaveDir.equals(loadSavePathBox.getText()));
         fieldsSame=fieldsSame&&(internalSettings.dbUsername.equals(userNameBox.getText()));
         fieldsSame=fieldsSame&&(internalSettings.settingsFilePath.equals(settingsFilePath.getText()));
+        
+        fieldsSame=fieldsSame&&(internalSettings.userName.equals(storyUsername.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.password.equals(storyPassword.getText()));
         
         return !fieldsSame;
     }

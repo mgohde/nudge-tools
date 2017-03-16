@@ -305,7 +305,7 @@ public class Story
      * @param wtn reWard table name.
      * @return A string containing SQL statements.
      */
-    public String toSQL(String stn, String atn, String rtn, String wtn)
+    public String toSQL(String stn, String atn, String rtn, String wtn, String username, String password)
     {
         String s="";
         int curid, position, resid;
@@ -318,23 +318,28 @@ public class Story
         String subNodeText;
         int minprob, maxprob;
         
+        String sanitizedTitle;
+        
+        sanitizedTitle=Story.dbSanitize(this.title);
+        
+        
         for(StoryNode n:this.nodeList)
         {
             //Break object orientation a little by just having this function
             //do all of the work by itself.
             
             answerChoice='A';
-            subNodeName=n.name;
-            subNodeText=n.text;
+            subNodeName=Story.dbSanitize(n.name);
+            subNodeText=Story.dbSanitize(n.text);
             
             //TODO: add reward insertion.
-            s+="INSERT INTO "+stn+" VALUES ("+curid+",'"+this.title+"','"+subNodeName+"','"+subNodeText.trim()+"',"+position+")\n";
+            s+="INSERT INTO "+stn+" VALUES ("+curid+",'"+sanitizedTitle+"','"+subNodeName+"','"+subNodeText.trim()+"',"+position+", (SELECT userid FROM contributors WHERE username='"+username+"'))\n";
             
             curid++;
             
             for(Response r:n.respList)
             {
-                s+="INSERT INTO "+atn+" VALUES ('"+this.title+"','"+subNodeName+"','"+answerChoice+"','"+r.prompt+"')\n";
+                s+="INSERT INTO "+atn+" VALUES ('"+sanitizedTitle+"','"+subNodeName+"','"+answerChoice+"','"+Story.dbSanitize(r.prompt)+"')\n";
                 
                 minprob=0;
                 maxprob=0;
@@ -352,7 +357,7 @@ public class Story
                     }
                     
                     maxprob=minprob+r.destWeights.get(i);
-                    s+="INSERT INTO "+rtn+" VALUES ("+resid+",'"+this.title+"','"+subNodeName+"','"+answerChoice+"',"+minprob+","+maxprob+",'"+r.destNames.get(i)+"')\n";
+                    s+="INSERT INTO "+rtn+" VALUES ("+resid+",'"+sanitizedTitle+"','"+subNodeName+"','"+answerChoice+"',"+minprob+","+maxprob+",'"+Story.dbSanitize(r.destNames.get(i))+"')\n";
                     minprob+=r.destWeights.get(i);
                     resid++;
                 }
@@ -362,5 +367,47 @@ public class Story
         }
         
         return s;
+    }
+    
+    //Inserts appropriate 
+    public static String dbSanitize(String inputText)
+    {
+        String outputString;
+        char c;
+        
+        outputString="";
+        
+        for(int i=0;i<inputText.length();i++)
+        {
+            c=inputText.charAt(i);
+            
+            if(c=='\''||c=='\"')
+            {
+                outputString+="\\";
+                outputString+=c;
+            }
+            
+            else if(c=='\n')
+            {
+                outputString+="\\n";
+            }
+            
+            else if(c=='\r')
+            {
+                outputString+="\\r";
+            }
+            
+            else if(c=='\t')
+            {
+                outputString+="\\t";
+            }
+            
+            else
+            {
+                outputString+=c;
+            }
+        }
+        
+        return outputString;
     }
 }

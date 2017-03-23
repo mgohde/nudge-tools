@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
  */
 public class StoryFrame extends javax.swing.JFrame {
     Settings settings;
-    EditorFilter ed;
+    //SyntaxFilter sf;
     StoryNode lastSelectedStoryNode;
     ArrayList<StoryNode> rawNodeList;
     int lastSelectedStoryNodeIndex;
@@ -82,19 +82,19 @@ public class StoryFrame extends javax.swing.JFrame {
         
         this.codeBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         
-        ed=new EditorFilter(this.codeBox.getStyledDocument(), this.codeBox);
+        /*
+        sf=new SyntaxFilter();
         
         if(this.codeBox.getStyledDocument() instanceof AbstractDocument)
         {
             AbstractDocument a=(AbstractDocument) this.codeBox.getStyledDocument();
-            a.setDocumentFilter(ed);
-            
+            a.addDocumentListener(sf);
         }
         
         else
         {
             System.err.println("codeBox does not contain AbstractDocument. Cannot do code highlighting.");
-        } 
+        } */
         
         rawNodeList=new ArrayList<>();
         internalStory=new Story();
@@ -175,7 +175,7 @@ public class StoryFrame extends javax.swing.JFrame {
             n=this.internalStory.nodeList.get(idx);
             System.out.println("Selected story node "+n.name);
             codeBox.setText(n.toString());
-            
+            /*
             if(codeBox.getStyledDocument() instanceof AbstractDocument)
             {
                 AbstractDocument a=(AbstractDocument) codeBox.getStyledDocument();
@@ -188,10 +188,10 @@ public class StoryFrame extends javax.swing.JFrame {
                     System.err.println("Got a BadLocationException when attempting to clear all data from an abstract document.");
                 }
                 
-                ed=new EditorFilter(codeBox.getStyledDocument(), codeBox);
+                sf=new SyntaxFilter();
                 
-                a.setDocumentFilter(ed);
-            }
+                a.addDocumentListener(sf);
+            }*/
             
             this.lastSelectedStoryNode=n;
             this.lastSelectedStoryNodeIndex=idx;

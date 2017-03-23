@@ -67,6 +67,7 @@ public class EditorFilter extends DocumentFilter
     public void insertString(FilterBypass f, int offset, String text, AttributeSet a) throws BadLocationException
     {
         super.insertString(f, offset, text, a);
+        System.out.println("Insert: "+text+" @ "+offset);
         queueStyleUpdate();
     }
     

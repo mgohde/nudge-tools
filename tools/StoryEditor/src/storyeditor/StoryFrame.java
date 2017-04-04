@@ -7,6 +7,11 @@ package storyeditor;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -224,7 +229,6 @@ public class StoryFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         deleteButton = new javax.swing.JToggleButton();
         newItemButton = new javax.swing.JButton();
-        storyTitleButton = new javax.swing.JButton();
         drawingPane = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         newItem = new javax.swing.JMenu();
@@ -240,6 +244,9 @@ public class StoryFrame extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
+        titleItem = new javax.swing.JMenuItem();
+        copyItem = new javax.swing.JMenuItem();
+        pasteItem = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
         sanityTestItem = new javax.swing.JMenuItem();
         publishItem = new javax.swing.JMenuItem();
@@ -280,13 +287,6 @@ public class StoryFrame extends javax.swing.JFrame {
         newItemButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newItemButtonActionPerformed(evt);
-            }
-        });
-
-        storyTitleButton.setText("Story title...");
-        storyTitleButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                storyTitleButtonActionPerformed(evt);
             }
         });
 
@@ -373,6 +373,31 @@ public class StoryFrame extends javax.swing.JFrame {
         jMenuBar1.add(newItem);
 
         editMenu.setText("Edit");
+
+        titleItem.setText("Title...");
+        titleItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                titleItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(titleItem);
+
+        copyItem.setText("Copy");
+        copyItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(copyItem);
+
+        pasteItem.setText("Paste");
+        pasteItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(pasteItem);
+
         jMenuBar1.add(editMenu);
 
         toolsMenu.setText("Tools");
@@ -386,6 +411,11 @@ public class StoryFrame extends javax.swing.JFrame {
         toolsMenu.add(sanityTestItem);
 
         publishItem.setText("Publish...");
+        publishItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                publishItemActionPerformed(evt);
+            }
+        });
         toolsMenu.add(publishItem);
 
         setDefaultsItem.setText("Set defaults...");
@@ -435,8 +465,7 @@ public class StoryFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(storyTitleButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                                .addGap(0, 182, Short.MAX_VALUE)
                                 .addComponent(newItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -457,8 +486,7 @@ public class StoryFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(updateButton)
                             .addComponent(newItemButton)
-                            .addComponent(deleteButton)
-                            .addComponent(storyTitleButton))
+                            .addComponent(deleteButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -577,21 +605,30 @@ public class StoryFrame extends javax.swing.JFrame {
         {
             textContent+="\n";
         }
+        
         StoryNode newNode;
+        String lineList[]=textContent.split("\n");
+        ArrayList<String> lines=new ArrayList<>();
+        lines.addAll(Arrays.asList(lineList));
+        newNode=new StoryNode();
+        newNode.parse(lines);
         
         //Determine the currently selected field:
         if(this.lastSelectedStoryNode!=null)
         {
-            String lineList[]=textContent.split("\n");
             System.out.println("Text content: "+textContent);
-            ArrayList<String> lines=new ArrayList<>();
             
-            lines.addAll(Arrays.asList(lineList));
             System.out.println("Number of lines: "+lines.size());
             
-            newNode=new StoryNode();
-            newNode.parse(lines);
             this.internalStory.nodeList.set(this.lastSelectedStoryNodeIndex, newNode);
+            this.lastSelectedStoryNode=newNode;
+        }
+        
+        //It should be possible for a user to manually add a new story node to the story.
+        else
+        {
+            System.out.println("New node created manually.");
+            this.internalStory.nodeList.add(newNode);
             this.lastSelectedStoryNode=newNode;
         }
         
@@ -616,39 +653,43 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newItemButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        this.internalStory.nodeList.remove(this.lastSelectedStoryNode);
-        this.lastSelectedStoryNode=null;
-        if(this.lastSelectedStoryNodeIndex>0)
+        
+        if(!this.internalStory.nodeList.isEmpty())
         {
-            this.lastSelectedStoryNodeIndex--;
+            this.internalStory.nodeList.remove(this.lastSelectedStoryNode);
+            this.lastSelectedStoryNode=null;
+            if(this.lastSelectedStoryNodeIndex>0)
+            {
+                this.lastSelectedStoryNodeIndex--;
+            }
+
+            else
+            {
+                this.lastSelectedStoryNodeIndex=0;
+            }
+
+            updateFields();
         }
         
         else
         {
-            this.lastSelectedStoryNodeIndex=0;
+            JOptionPane.showMessageDialog(this, "Cannot delete node from empty storyline.", "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        
-        updateFields();
     }//GEN-LAST:event_deleteButtonActionPerformed
 
-    private void storyTitleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_storyTitleButtonActionPerformed
-        String newTitle=(String) JOptionPane.showInputDialog(this, "Enter new story title");
-        
-        if(newTitle!=null)
+    private void sanityTestItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sanityTestItemActionPerformed
+        if(internalStory.nodeList.isEmpty())
         {
-            this.internalStory.title=newTitle;
+            SanityReport r=this.internalStory.sanityTest();
+
+            ErrorFrame eFrame=new ErrorFrame(r.toString());
+            eFrame.setVisible(true);
         }
         
-        updateFields();
-        
-        
-    }//GEN-LAST:event_storyTitleButtonActionPerformed
-
-    private void sanityTestItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sanityTestItemActionPerformed
-        SanityReport r=this.internalStory.sanityTest();
-        
-        ErrorFrame eFrame=new ErrorFrame(r.toString());
-        eFrame.setVisible(true);
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Cannot perform a sanity check on an empty story.", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_sanityTestItemActionPerformed
 
     private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
@@ -723,6 +764,9 @@ public class StoryFrame extends javax.swing.JFrame {
         
         //Proceed:
         this.internalStory=new Story();
+        
+        //Ask the user what to name the new story:
+        
         this.lastSelectedStoryNode=null;
         this.lastSelectedStoryNodeIndex=0;
         this.nodeNameList.removeAll();
@@ -808,6 +852,52 @@ public class StoryFrame extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_createAccountItemActionPerformed
 
+    private void copyItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyItemActionPerformed
+        Clipboard c=Toolkit.getDefaultToolkit().getSystemClipboard();
+        String s=codeBox.getSelectedText();
+        StringSelection selection=new StringSelection(s);
+        
+        c.setContents(selection, selection);
+    }//GEN-LAST:event_copyItemActionPerformed
+
+    private void pasteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteItemActionPerformed
+        Clipboard c=Toolkit.getDefaultToolkit().getSystemClipboard();
+        try
+        {
+            //Hopefully this won't blow up.
+            String s=(String) c.getData(DataFlavor.stringFlavor);
+            String codeBoxContents=codeBox.getText();
+            int idx=codeBox.getCaret().getDot();
+            
+            String outStr=codeBoxContents.substring(0, idx);
+            outStr+=s;
+            outStr+=codeBoxContents.substring(idx, codeBoxContents.length());
+            
+            codeBox.setText(outStr);
+        } catch(UnsupportedFlavorException e)
+        {
+            //No particular care needs to be given.
+        } catch(IOException e)
+        {
+            //Do nothing
+        }
+    }//GEN-LAST:event_pasteItemActionPerformed
+
+    private void titleItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_titleItemActionPerformed
+        String newTitle=(String) JOptionPane.showInputDialog(this, "Enter new story title");
+        
+        if(newTitle!=null)
+        {
+            this.internalStory.title=newTitle;
+        }
+        
+        updateFields();
+    }//GEN-LAST:event_titleItemActionPerformed
+
+    private void publishItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_publishItemActionPerformed
+        PublicationFrame f=new PublicationFrame(this.internalStory, this.settings);
+    }//GEN-LAST:event_publishItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -846,6 +936,7 @@ public class StoryFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
     private javax.swing.JTextPane codeBox;
+    private javax.swing.JMenuItem copyItem;
     private javax.swing.JMenuItem createAccountItem;
     private javax.swing.JToggleButton deleteButton;
     private javax.swing.JPanel drawingPane;
@@ -869,13 +960,14 @@ public class StoryFrame extends javax.swing.JFrame {
     private javax.swing.JButton newItemButton;
     private javax.swing.JList nodeNameList;
     private javax.swing.JMenuItem openItem;
+    private javax.swing.JMenuItem pasteItem;
     private javax.swing.JMenuItem publishItem;
     private javax.swing.JMenuItem sanityTestItem;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JMenuItem serverExportItem;
     private javax.swing.JMenuItem serverImportItem;
     private javax.swing.JMenuItem setDefaultsItem;
-    private javax.swing.JButton storyTitleButton;
+    private javax.swing.JMenuItem titleItem;
     private javax.swing.JMenu toolsMenu;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables

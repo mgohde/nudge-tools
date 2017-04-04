@@ -29,6 +29,10 @@ public class Settings
     public String userName;
     public String password;
     
+    //Publication credentials:
+    public String dbAdminEmail;
+    public String userEmail;
+    
     
     public Settings()
     {
@@ -40,6 +44,8 @@ public class Settings
         loadSaveDir=System.getProperty("user.home");
         userName="someuser";
         password="password";
+        dbAdminEmail="someone@somewhere.edu";
+        userEmail="you@somewhere.edu";
     }
     
     public boolean settingsFileExists()
@@ -83,6 +89,12 @@ public class Settings
                     case "password:":
                         password=lineToks[1];
                         break;
+                    case "dbemail:":
+                        dbAdminEmail=lineToks[1];
+                        break;
+                    case "useremail:":
+                        userEmail=lineToks[1];
+                        break;
                     default:
                         System.err.println("Encountered unknown token when parsing configuration: "+line);
                         System.err.println("Token: "+lineToks[0]);
@@ -101,6 +113,9 @@ public class Settings
         
         pw.printf("%s: %s\n", "username", userName);
         pw.printf("%s: %s\n", "password", password);
+        
+        pw.printf("%s: %s\n", "dbemail", dbAdminEmail);
+        pw.printf("%s: %s\n", "useremail", userEmail);
         
         pw.flush();
     }

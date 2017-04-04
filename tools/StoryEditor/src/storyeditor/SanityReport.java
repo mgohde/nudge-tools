@@ -23,6 +23,7 @@ public class SanityReport
     ArrayList<String> circularReferenceCheckMessages;
     
     
+    
     public SanityReport()
     {
         canBeCompleted=true;
@@ -64,5 +65,10 @@ public class SanityReport
         }
         
         return s;
+    }
+    
+    public boolean allGood()
+    {
+        return canBeCompleted&&allProbabilitiesCorrect&&noSelfReferentialNodes&&noCircularReferences;
     }
 }

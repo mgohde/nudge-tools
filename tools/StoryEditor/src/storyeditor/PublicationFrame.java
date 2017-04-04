@@ -201,11 +201,13 @@ public class PublicationFrame extends javax.swing.JFrame
     
     private void publishButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_publishButtonActionPerformed
         //String xmlContents=story.generateXML();
+        //Commented out so as not to push broken code:
+        /*
         story.exportAsXML(new File(settings.loadSaveDir+"/"+story.title+".final.xml"));
         String publicationUri="mailto:"+settings.dbAdminEmail+"?subject=Publishing%20"+story.title;
         publicationUri+="&body=Contributor%20"+settings.userName+"%20has%20attached%20storyline:"+story.title;
         
-        Desktop.getDesktop().
+        Desktop.getDesktop().*/
     }//GEN-LAST:event_publishButtonActionPerformed
 
 

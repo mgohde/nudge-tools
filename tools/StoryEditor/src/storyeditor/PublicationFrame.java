@@ -11,6 +11,11 @@ import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.WindowConstants;
 
 /**
@@ -35,6 +40,9 @@ public class PublicationFrame extends javax.swing.JFrame
         this.setVisible(true);
         
         this.settings=settings;
+        
+        senderEmailBox.setText(settings.userEmail);
+        recipientEmailBox.setText(settings.dbAdminEmail);
         
         //Perform a sanity check on the requested storyline.
         r=s.sanityTest();
@@ -75,7 +83,9 @@ public class PublicationFrame extends javax.swing.JFrame
         summaryLabel = new javax.swing.JLabel();
         copyToClipboardButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        recipientEmailBox = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        senderEmailBox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,7 +120,11 @@ public class PublicationFrame extends javax.swing.JFrame
 
         jLabel3.setText("DB Administrator Email Address:");
 
-        jTextField1.setText("someone@somewhere.edu");
+        recipientEmailBox.setText("someone@somewhere.edu");
+
+        jLabel4.setText("Sender Email Address:");
+
+        senderEmailBox.setText("you@somewhere.edu");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,14 +143,16 @@ public class PublicationFrame extends javax.swing.JFrame
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(summaryLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))))
+                            .addComponent(jLabel4)
+                            .addComponent(recipientEmailBox)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                            .addComponent(senderEmailBox))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -153,8 +169,12 @@ public class PublicationFrame extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(summaryLabel)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addComponent(recipientEmailBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(senderEmailBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(publishButton)
                     .addComponent(cancelButton)
@@ -185,10 +205,60 @@ public class PublicationFrame extends javax.swing.JFrame
         
         for(char c:inputArr)
         {
+            //These are really just the ASCII codes for these characters.
             if(c==' ')
             {
                 output+="%20";
             }
+            
+            else if(c=='&')
+            {
+                output+="%26";
+            }
+            
+            else if(c=='<')
+            {
+                output+="%3C";
+            }
+            
+            else if(c=='>')
+            {
+                output+="%3E";
+            }
+            
+            else if(c=='#')
+            {
+                output+="%23";
+            }
+            
+            else if(c=='%')
+            {
+                output+="%25";
+            }
+            
+            else if(c=='{')
+            {
+                output+="%7B";
+            }
+            
+            else if(c=='}')
+            {
+                output+="%7D";
+            }
+            
+            else if(c=='|')
+            {
+                output+="%7C";
+            }
+            
+            else if(c=='\n')
+            {
+                output+="%0A";
+            }
+            
+            //else if(c=='\')
+            
+            //TODO: Implement more of these character replacements.
             
             else
             {
@@ -202,12 +272,29 @@ public class PublicationFrame extends javax.swing.JFrame
     private void publishButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_publishButtonActionPerformed
         //String xmlContents=story.generateXML();
         //Commented out so as not to push broken code:
-        /*
-        story.exportAsXML(new File(settings.loadSaveDir+"/"+story.title+".final.xml"));
-        String publicationUri="mailto:"+settings.dbAdminEmail+"?subject=Publishing%20"+story.title;
-        publicationUri+="&body=Contributor%20"+settings.userName+"%20has%20attached%20storyline:"+story.title;
-        
-        Desktop.getDesktop().*/
+        try
+        {
+            story.exportAsXML(new File(settings.loadSaveDir+"/"+story.title+".final.xml"));
+            String publicationUri="mailto:"+settings.dbAdminEmail+"?subject=Publishing%20"+story.title;
+            publicationUri+="&body="+strUrl("Contributor "+settings.userName+" has submitted storyline "+story.title+" for publication.");
+            publicationUri+=strUrl("Please see attached XML representation of the storyline.\n\n");
+            publicationUri+=strUrl("Sent from the StoryEditor program.");
+            publicationUri+="&attachment="+settings.loadSaveDir+"/"+story.title+".final.xml";
+
+            try
+            {
+                Desktop.getDesktop().browse(new URI(publicationUri));
+            } catch(IOException e)
+            {
+
+            } catch(URISyntaxException ex)
+            {
+                System.err.println("Invalid URI: "+publicationUri);
+            }
+        } catch(FileNotFoundException exc)
+        {
+            System.err.println("Could not write to file: "+settings.loadSaveDir+"/"+story.title+".final.xml");
+        }
     }//GEN-LAST:event_publishButtonActionPerformed
 
 
@@ -217,10 +304,12 @@ public class PublicationFrame extends javax.swing.JFrame
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton publishButton;
+    private javax.swing.JTextField recipientEmailBox;
     private javax.swing.JTextPane sanityText;
+    private javax.swing.JTextField senderEmailBox;
     private javax.swing.JLabel summaryLabel;
     // End of variables declaration//GEN-END:variables
 }

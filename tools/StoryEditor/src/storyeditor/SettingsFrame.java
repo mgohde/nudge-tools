@@ -63,6 +63,9 @@ public class SettingsFrame extends javax.swing.JFrame {
         fieldsSame=fieldsSame&&(internalSettings.userName.equals(storyUsername.getText()));
         fieldsSame=fieldsSame&&(internalSettings.password.equals(storyPassword.getText()));
         
+        fieldsSame=fieldsSame&&(internalSettings.userEmail.equals(userEmail.getText()));
+        fieldsSame=fieldsSame&&(internalSettings.dbAdminEmail.equals(dbAdminEmail.getText()));
+        
         return !fieldsSame;
     }
     
@@ -98,6 +101,11 @@ public class SettingsFrame extends javax.swing.JFrame {
         passwordBox = new javax.swing.JPasswordField();
         serverBox = new javax.swing.JTextField();
         dbNameBox = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        dbAdminEmail = new javax.swing.JTextField();
+        userEmail = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         settingsFilePath = new javax.swing.JLabel();
@@ -172,6 +180,45 @@ public class SettingsFrame extends javax.swing.JFrame {
         );
 
         tabbedPane.addTab("Database Connection Settings", jPanel1);
+
+        jLabel9.setText("Database Administrator Email:");
+
+        jLabel10.setText("Your email:");
+
+        dbAdminEmail.setText("someone@somewhere.edu");
+
+        userEmail.setText("you@somewhere.edu");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(userEmail)
+                    .addComponent(dbAdminEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(dbAdminEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(userEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(117, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Publication Settings", jPanel3);
 
         jLabel5.setText("Settings file location:");
 
@@ -307,6 +354,9 @@ public class SettingsFrame extends javax.swing.JFrame {
         internalSettings.userName=storyUsername.getText();
         internalSettings.password=storyPassword.getText();
         
+        internalSettings.dbAdminEmail=dbAdminEmail.getText();
+        internalSettings.userEmail=userEmail.getText();
+        
         if(okButtonCallback!=null)
         {
             okButtonCallback.run();
@@ -354,8 +404,10 @@ public class SettingsFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField dbAdminEmail;
     private javax.swing.JTextField dbNameBox;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -363,8 +415,10 @@ public class SettingsFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel loadSavePathBox;
     private javax.swing.JButton loadSavePathUpdateButton;
     private javax.swing.JButton okButton;
@@ -375,6 +429,7 @@ public class SettingsFrame extends javax.swing.JFrame {
     private javax.swing.JPasswordField storyPassword;
     private javax.swing.JTextField storyUsername;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JTextField userEmail;
     private javax.swing.JTextField userNameBox;
     // End of variables declaration//GEN-END:variables
 }

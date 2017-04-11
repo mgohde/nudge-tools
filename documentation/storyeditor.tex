@@ -267,6 +267,13 @@ To register:
     \caption{Story line import box}
 \end{figure}
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[scale=1]{exportwindow.png}
+    \end{center}
+    \caption{Story line export box}
+\end{figure}
+
 Once registration is complete, all relevant user authentication information will be stored automatically in the Story Editor's
 configuration. This means that all database interactions will automatically use the new credentials, and that the same 
 set will be loaded on every start-up.\footnotemark
@@ -288,7 +295,19 @@ In order to store a storyline, it is necessary to go through the following steps
 \end{enumerate}
 
 \subsection{Retrieving a storyline remotely}
-The process of importing a storyline is very similar to that of exporting one. 
+The process of importing a storyline is very similar to that of exporting one.
+
+\begin{enumerate}
+\item Click the ``Import from server...'' item in the ``File'' menu.
+\item Ensure that all information presented is correct.
+\item Click the ``Query'' button in the ``Import storyline from server...'' UI.
+\item If all goes well, the box in the center of the window should become populated with a categorized tree of stories.
+\item Select a storyline from the tree.
+\item Click the ``Import'' button.
+\end{enumerate}
+
+Assuming that there are no errors, the storyline selected should be read from the remote server and presented in the story editor
+window.
 
 \section{Publishing a storyline}
 Once a storyline is sufficiently edited and checked, it is useful to publish it to the live Nudge server so that it can be

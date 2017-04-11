@@ -237,10 +237,66 @@ public class Story
         return n;
     }
     
+    //The idea behind this function is that it checks every child of the given parent for 
+    //references back to that parent.
+    //It should prove to be horribly inefficient but relatively easy to multithread (each node
+    //is checked with one call to this function.)
+    private boolean somehowEvenWorseReferenceCheck(StoryNode n, SanityReport r, String baseNodeName)
+    {
+        ArrayList<String> dests;//=n.getCompleteDestList();
+        boolean respV=true;
+        
+        //This should be the case if n's name was not found or is END.
+        if(n==null)
+        {
+            return true;
+        }
+            
+        dests=n.getCompleteDestList();
+        
+        if(dests.isEmpty())
+        {
+            r.circularReferenceCheckMessages.add("Node "+n+" has no valid destinations defined.");
+            return false;
+        }
+        
+        //Determine if this immediate heirarchy refers back to its parent:
+        for(String s:dests)
+        {
+            if(s.equals(baseNodeName))
+            {
+                r.circularReferenceCheckMessages.add("Check for \""+baseNodeName+"\" failed on node \""+n.name+"\"");
+                return false;
+            }
+            
+            else
+            {
+                respV=respV&&somehowEvenWorseReferenceCheck(getNode(s), r, baseNodeName);
+            }
+        }
+        
+        return respV;
+    }
+    
+    private void somehowEvenWorseReferenceCheckDriver(SanityReport r)
+    {
+        boolean checkV=true;
+        
+        //This can be made parallel fairly easily.
+        for(StoryNode n:this.nodeList)
+        {
+            checkV=checkV&&somehowEvenWorseReferenceCheck(n, r, n.name);
+        }
+        
+        r.noCircularReferences=checkV;
+    }
+    
+    //TODO: Fix reference checking so that one node can have multiple direct sources.
     private boolean rcsvTerribleReferenceCheck(StoryNode n, SanityReport r)
     {
-        if(n.hasBeenVisited)
+        if(n.hasBeenVisited)//&&!n.visitedBy.equals(r))
         {
+            r.circularReferenceCheckMessages.add(n.name+" has been marked as visited.");
             return false;
         }
         
@@ -292,7 +348,8 @@ public class Story
         
         checkNodeWeights(r);
         checkSelfReferentialNodes(r);
-        extremelyExpensiveAndPoorlyImplementedReferenceCheck(r);
+        //extremelyExpensiveAndPoorlyImplementedReferenceCheck(r);
+        somehowEvenWorseReferenceCheckDriver(r);
         
         return r;
     }

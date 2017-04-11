@@ -276,7 +276,7 @@ public class PublicationFrame extends javax.swing.JFrame
         {
             story.exportAsXML(new File(settings.loadSaveDir+"/"+story.title+".final.xml"));
             String publicationUri="mailto:"+settings.dbAdminEmail+"?subject=Publishing%20"+story.title;
-            publicationUri+="&body="+strUrl("Contributor "+settings.userName+" has submitted storyline "+story.title+" for publication.");
+            publicationUri+="&body="+strUrl("Contributor "+settings.userName+" has submitted storyline "+story.title+" for publication. ");
             publicationUri+=strUrl("Please see attached XML representation of the storyline.\n\n");
             publicationUri+=strUrl("Sent from the StoryEditor program.");
             publicationUri+="&attachment="+settings.loadSaveDir+"/"+story.title+".final.xml";

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.9.17)  6 APR 2017 16:10
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.9.17)  11 APR 2017 15:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -238,37 +238,43 @@ Overfull \hbox (57.16953pt too wide) in paragraph at lines 265--266
  [] 
  []
 
+<exportwindow.png, id=44, 246.1697pt x 214.55156pt>
+File: exportwindow.png Graphic file (type png)
+ <use exportwindow.png>
+Package pdftex.def Info: exportwindow.png used on input line 272.
+(pdftex.def)             Requested size: 246.16908pt x 214.55103pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 275.
-[10] [11 <./registrationwindow.png>] [12 <./importwindow.png>]
-<publicationbox.png, id=58, 344.78813pt x 298.11375pt>
+(Font)              <5> on input line 282.
+
+[10] [11 <./registrationwindow.png>] [12 <./importwindow.png>] [13 <./exportwin
+dow.png>] <publicationbox.png, id=64, 344.78813pt x 298.11375pt>
 File: publicationbox.png Graphic file (type png)
 
 <use publicationbox.png>
-Package pdftex.def Info: publicationbox.png used on input line 313.
+Package pdftex.def Info: publicationbox.png used on input line 332.
 (pdftex.def)             Requested size: 344.78728pt x 298.11302pt.
 
-<publicationemail.png, id=59, 527.72156pt x 595.47469pt>
+<publicationemail.png, id=65, 527.72156pt x 595.47469pt>
 File: publicationemail.png Graphic file (type png)
 
 <use publicationemail.png>
-Package pdftex.def Info: publicationemail.png used on input line 320.
+Package pdftex.def Info: publicationemail.png used on input line 339.
 (pdftex.def)             Requested size: 527.72028pt x 595.47322pt.
 
-Overfull \hbox (137.72028pt too wide) in paragraph at lines 320--321
+Overfull \hbox (137.72028pt too wide) in paragraph at lines 339--340
  [] 
  []
 
 
-LaTeX Warning: Float too large for page by 87.80653pt on input line 323.
+LaTeX Warning: Float too large for page by 87.80653pt on input line 342.
 
-[13] [14 <./publicationbox.png>] [15 <./publicationemail.png>]
+[14] [15 <./publicationbox.png>] [16 <./publicationemail.png>]
 (./storyeditor.aux) ) 
 Here is how much of TeX's memory you used:
- 2771 strings out of 495028
- 40490 string characters out of 6181497
+ 2776 strings out of 495028
+ 40589 string characters out of 6181497
  210467 words of memory out of 5000000
- 5966 multiletter control sequences out of 15000+600000
+ 5970 multiletter control sequences out of 15000+600000
  9155 words of font info for 32 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,8n,32p,246b,1447s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -281,10 +287,10 @@ texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on storyeditor.pdf (15 pages, 313813 bytes).
+Output written on storyeditor.pdf (16 pages, 335072 bytes).
 PDF statistics:
- 102 PDF objects out of 1000 (max. 8388607)
- 63 compressed objects within 1 object stream
+ 107 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

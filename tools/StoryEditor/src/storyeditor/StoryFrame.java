@@ -571,10 +571,26 @@ public class StoryFrame extends javax.swing.JFrame {
             System.out.println("File open op discarded.");
         }
     }//GEN-LAST:event_openItemActionPerformed
-
+    
+    private String getExtension(String s)
+    {
+        String arr[]=s.split(".");
+        
+        if(arr.length==0)
+        {
+            return null;
+        }
+        
+        else
+        {
+            return arr[arr.length-1];
+        }
+    }
+    
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         JFileChooser jfc=new JFileChooser(settings.loadSaveDir);
         FileNameExtensionFilter filter=new FileNameExtensionFilter("Story files", "story");
+        File f;
         jfc.setFileFilter(filter);
         
         int retV=jfc.showSaveDialog(this);
@@ -582,11 +598,18 @@ public class StoryFrame extends javax.swing.JFrame {
         if(retV==JFileChooser.APPROVE_OPTION)
         {
             System.out.println("File selected: "+jfc.getSelectedFile());
+            f=jfc.getSelectedFile();
+            
+            if(!f.getName().contains("."))
+            {
+                f=new File(f.getAbsolutePath()+".story");
+            }
+            
             try {
-                this.internalStory.saveStory(jfc.getSelectedFile());
+                this.internalStory.saveStory(f);
                 updateFields();
             } catch (IOException ex) {
-                System.err.println("HOOOOooOOOoOoOooooooOooooOooooOOO! "+jfc.getSelectedFile());
+                System.err.println("HOOOOooOOOoOoOooooooOooooOooooOOO! "+f);
             }
         }
         
@@ -678,7 +701,7 @@ public class StoryFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void sanityTestItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sanityTestItemActionPerformed
-        if(internalStory.nodeList.isEmpty())
+        if(!internalStory.nodeList.isEmpty())
         {
             SanityReport r=this.internalStory.sanityTest();
 

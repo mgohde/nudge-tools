@@ -25,6 +25,7 @@ public class StoryNode
     ArrayList<Response> respList;
     
     boolean hasBeenVisited;
+    String visitedBy=null;
     
     public StoryNode()
     {
